@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Book Your House Design Appointment</title>
+ 
+     <link rel="stylesheet" href="style/style.css">
+     <script src="guard.js"></script>
+ </head>
+ 
+ <body class="appointment-page">
+ 
+     <!-- Navigation Bar -->
+     <header>
+         <div class="logo">OBSTRECTED</div>
+ 
+         <nav>
+             <ul>
+                 <li><a href="home.html">Home</a></li>
+                 <li><a href="portfolio.html">portfolios</a></li>
+                 <li><a href="our_project.html">Projects</a></li>
+                 <li><a href="book_appointment.html">Book Appointment</a></li>
+                 <li><a href="about.html">About</a></li>
+                 <li><a href="contact.html">Contact</a></li>
+                 <li><a href="architect_login.html">Architect Panel</a></li>
+                 <li><a href="customer_login.html">Customer Panel</a></li>
+             </ul>
+         </nav>
+     </header>
+ 
+     <!-- Appointment Form -->
+     <div class="container">
+ 
+         <h2>Book an Appointment</h2>
+ 
+         <form id="appointmentForm">
+ 
+             <label for="name">Full Name:</label>
+             <input type="text" id="name" name="name" required>
+ 
+             <label for="email">Email:</label>
+             <input type="email" id="email" name="email" required>
+             <span id="emailError" style="color:red; display:none;">
+                 Invalid email format
+             </span>
+ 
+             <label for="phone">Phone:</label>
+             <input type="text" id="phone" name="phone" required>
+             <span id="phoneError" style="color:red; display:none;">
+                 Invalid phone number (10 digits required)
+             </span>
+ 
+             <label for="house_category">House Category:</label>
+             <select id="house_category" name="house_category" required>
+                 <option value="" disabled selected>Select a Category</option>
+                 <option value="Apartment">Apartment</option>
+                 <option value="Villa">Villa</option>
+                 <option value="Bungalow">Bungalow</option>
+                 <option value="Duplex">Duplex</option>
+                 <option value="Penthouse">Penthouse</option>
+             </select>
+ 
+             <label for="architect">Architect Name:</label>
+             <select id="architect" name="architect" required>
+                 <option value="" disabled selected>Select Architect</option>
+                 <option value="Ar. Beloo Gajjar">Ar. Beloo Gajjar</option>
+                 <option value="Ar. Riya Kavathiya">Ar. Riya Kavathiya</option>
+                 <option value="Ar. Kushal Shah">Ar. Kushal Shah</option>
+                 <option value="Ar. Neha Desai">Ar. Diya Pate</option>
+                 <option value="Ar. Yesh Muleva">Ar. Yesh Muleva</option>
+                 <option value="Ar. Himani Shukla">Ar. Himani Shukla</option>
+                 <option value="Ar. Amritansh Pandey">Ar. Amritansh Pandey</option>
+             </select>
+ 
+             <label for="date">Appointment Date:</label>
+             <input type="date" id="date" name="date" required>
+ 
+             <label for="time">Appointment Time:</label>
+             <input type="time" id="time" name="time" required>
+ 
+             <label for="planning">What you want to add in your plan:</label>
+             <input type="text" id="planning" name="planning">
+ 
+             <button type="button" onclick="validateForm()">
+                 Save Appointment
+             </button>
+ 
+         </form>
+     </div>
+ 
+     <script>
+ 
+         function validateForm() {
+ 
+             let email = document.getElementById("email").value;
+             let phone = document.getElementById("phone").value;
+ 
+             let emailError = document.getElementById("emailError");
+             let phoneError = document.getElementById("phoneError");
+ 
+             let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+             let phonePattern = /^\d{10}$/;
+ 
+             let isValid = true;
+ 
+             if (!emailPattern.test(email)) {
+                 emailError.style.display = "inline";
+                 isValid = false;
+             } else {
+                 emailError.style.display = "none";
+             }
+ 
+             if (!phonePattern.test(phone)) {
+                 phoneError.style.display = "inline";
+                 isValid = false;
+             } else {
+                 phoneError.style.display = "none";
+             }
+ 
+             if (isValid) {
+                 saveAsTxt();
+             }
+         }
+ 
+         function saveAsTxt() {
+ 
+             let name = document.getElementById("name").value;
+             let email = document.getElementById("email").value;
+             let phone = document.getElementById("phone").value;
+             let houseCategory = document.getElementById("house_category").value;
+             let architect = document.getElementById("architect").value;
+             let date = document.getElementById("date").value;
+             let time = document.getElementById("time").value;
+             let planning = document.getElementById("planning").value;
+ 
+             let content = `Appointment Details:
+ 
+ ------------------------
+ Full Name: ${name}
+ Email: ${email}
+ Phone: ${phone}
+ House Category: ${houseCategory}
+ Architect Name: ${architect}
+ Appointment Date: ${date}
+ Appointment Time: ${time}
+ Additional Planning: ${planning}
+ ------------------------`;
+ 
+             let blob = new Blob([content], { type: "text/plain" });
+ 
+             let link = document.createElement("a");
+             link.href = URL.createObjectURL(blob);
+             link.download = "AppointmentDetails.txt";
+ 
+             link.click();
+         }
+ 
+     </script>
+ 
+ </body>
+ 
+ </html>

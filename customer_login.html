@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Login | OBSTRECTED</title>
+    <link rel="stylesheet" href="style/style.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0d2137 0%, #1a3a52 50%, #0d5c63 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-top: 90px;
+        }
+
+        .login-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 18px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            padding: 45px 50px;
+            width: 100%;
+            max-width: 480px;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-icon {
+            text-align: center;
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .login-card h2 {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 5px;
+            color: #0d2137;
+        }
+
+        .login-card .subtitle {
+            text-align: center;
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .badge-panel {
+            display: inline-block;
+            background: #0d5c63;
+            color: white;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 7px;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: 'Poppins', sans-serif;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            outline: none;
+            background: #fafafa;
+        }
+
+        .form-group input:focus {
+            border-color: #17a2b8;
+            box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.15);
+            background: white;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #17a2b8, #0d5c63);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+            margin-top: 5px;
+            letter-spacing: 0.5px;
+        }
+
+        .login-btn:hover {
+            background: linear-gradient(135deg, #138496, #0a4a4f);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(23, 162, 184, 0.4);
+        }
+
+        .error-msg {
+            color: #dc3545;
+            font-size: 13px;
+            text-align: center;
+            margin-top: 12px;
+            display: none;
+            padding: 10px;
+            background: rgba(220, 53, 69, 0.1);
+            border-radius: 8px;
+        }
+
+        .credentials-hint {
+            margin-top: 25px;
+            background: linear-gradient(135deg, #f0f9ff, #e0f7fa);
+            border: 1px solid #b2ebf2;
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .credentials-hint h4 {
+            color: #0d2137;
+            font-size: 13px;
+            margin-bottom: 10px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .cred-table {
+            width: 100%;
+            font-size: 12px;
+            border-collapse: collapse;
+        }
+
+        .cred-table th {
+            color: #0d5c63;
+            font-weight: 600;
+            text-align: left;
+            padding: 4px 6px;
+            border-bottom: 1px solid #b2ebf2;
+        }
+
+        .cred-table td {
+            color: #333;
+            padding: 4px 6px;
+        }
+
+        .cred-table tr:hover td {
+            background: rgba(23, 162, 184, 0.07);
+            cursor: pointer;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 18px;
+        }
+
+        .back-link a {
+            color: #17a2b8;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .back-link a:hover {
+            color: #0d5c63;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <header>
+        <div class="logo">OBSTRECTED</div>
+        <nav>
+            <ul>
+                <li><a href="home.html">Home</a></li>
+                <li><a href="portfolio.html">Portfolios</a></li>
+                <li><a href="our_project.html">Projects</a></li>
+                <li><a href="book_appointment.html">Book Appointment</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="architect_login.html">Architect Panel</a></li>
+                <li><a href="customer_login.html" style="color:#17a2b8;">Customer Panel</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="login-wrapper">
+        <div class="login-card">
+            <div class="login-icon">🏠</div>
+            <div style="text-align:center; margin-bottom:10px;">
+                <span class="badge-panel">CUSTOMER PANEL</span>
+            </div>
+            <h2>Customer Login</h2>
+            <p class="subtitle">Sign in to view your appointments & project status</p>
+
+            <div class="form-group">
+                <label for="cust-username">Username</label>
+                <input type="text" id="cust-username" placeholder="Enter your username" autocomplete="username">
+            </div>
+
+            <div class="form-group">
+                <label for="cust-password">Password</label>
+                <input type="password" id="cust-password" placeholder="Enter your password"
+                    autocomplete="current-password">
+            </div>
+
+            <button class="login-btn" onclick="customerLogin()">Sign In →</button>
+
+            <div class="error-msg" id="cust-error">❌ Invalid username or password. Please try again.</div>
+
+            <div style="text-align:center; margin-top:15px; font-size:14px;">
+                <span style="color:#666;">Don't have an account?</span>
+                <a href="customer_register.html" style="color:#17a2b8; font-weight:600; text-decoration:none;">Register
+                    here</a>
+            </div>
+
+            <!-- Credentials Reference -->
+            <div class="credentials-hint">
+                <h4>🔑 Sample Login Credentials</h4>
+                <table class="cred-table">
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>Username</th>
+                            <th>Password</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr onclick="fillCreds('rohan.mehta','Cust@RoM2024')">
+                            <td>Rohan Mehta</td>
+                            <td>rohan.mehta</td>
+                            <td>Cust@RoM2024</td>
+                        </tr>
+                        <tr onclick="fillCreds('vikram.nair','Cust@ViN2024')">
+                            <td>Vikram Nair</td>
+                            <td>vikram.nair</td>
+                            <td>Cust@ViN2024</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+                <p style="font-size:11px;color:#888;text-align:center;margin-top:8px;">Click a row to auto-fill
+                    credentials</p>
+            </div>
+
+            <div class="back-link">
+                <a href="home.html">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p style="text-align:center;padding:20px;background:#222;color:white;">
+            © 2026 OBSTRECTED Architecture | All Rights Reserved
+        </p>
+    </footer>
+
+    <script>
+        function fillCreds(username, password) {
+            document.getElementById('cust-username').value = username;
+            document.getElementById('cust-password').value = password;
+        }
+
+        async function customerLogin() {
+            const username = document.getElementById('cust-username').value.trim();
+            const password = document.getElementById('cust-password').value.trim();
+            const errorDiv = document.getElementById('cust-error');
+            const btn = document.querySelector('.login-btn');
+
+            btn.textContent = 'Signing in...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password, role: 'customer' })
+                });
+
+                if (res.ok) {
+                    window.location.href = '/customer_dashboard.html';
+                } else {
+                    errorDiv.style.display = 'block';
+                    document.getElementById('cust-password').value = '';
+                }
+            } catch (e) {
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = '❌ Server error. Is the server running?';
+            }
+
+            btn.textContent = 'Sign In →';
+            btn.disabled = false;
+        }
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') customerLogin();
+        });
+    </script>
+
+</body>
+
+</html>

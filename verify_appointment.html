@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Appointment — OBSTRECTED</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body {
+            background: #f4f7f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .verify-card {
+            background: white;
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .logo { font-weight: 700; font-size: 24px; color: #1a1a2e; margin-bottom: 30px; letter-spacing: 1px; }
+        h2 { font-size: 20px; color: #333; margin-bottom: 20px; }
+        
+        .input-group { margin-bottom: 25px; }
+        input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            font-size: 18px;
+            text-align: center;
+            letter-spacing: 5px;
+            font-weight: 600;
+            outline: none;
+            transition: 0.3s;
+        }
+        input:focus { border-color: #28a745; background: #fafffb; }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(40,167,69,0.3); }
+
+        #resultArea { margin-top: 30px; display: none; text-align: left; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .detail-item {
+            background: #f8f9fa;
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid #28a745;
+        }
+        .detail-label { font-size: 12px; color: #888; margin-bottom: 2px; }
+        .detail-value { font-size: 15px; color: #333; font-weight: 500; }
+
+        .error-box {
+            display: none;
+            background: #fff5f5;
+            color: #e53e3e;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #feb2b2;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="verify-card">
+        <div class="logo">OBSTRECTED</div>
+        <h2>Verify Appointment</h2>
+        
+        <div id="errorMsg" class="error-box">Invalid code. Please check and try again.</div>
+
+        <div class="input-group" id="inputSection">
+            <p style="font-size: 13px; color: #666; margin-bottom: 15px;">Enter the 5-digit verification code sent to your email.</p>
+            <input type="text" id="otcInput" maxlength="5" placeholder="00000">
+            <button onclick="verifyCode()" id="verifyBtn" style="margin-top: 20px;">Verify Now</button>
+        </div>
+
+        <div id="resultArea">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="background: #28a745; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 24px;">✓</div>
+                <h3 style="color: #28a745;">Verified Successfully</h3>
+            </div>
+            
+            <div id="detailsContainer">
+                <!-- Filled by JS -->
+            </div>
+            
+            <button onclick="location.reload()" style="margin-top: 20px; background: #1a1a2e;">Verify Another</button>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const apptId = urlParams.get('id');
+
+        async function verifyCode() {
+            const otc = document.getElementById('otcInput').value.trim();
+            const btn = document.getElementById('verifyBtn');
+            const errorBox = document.getElementById('errorMsg');
+            const inputSection = document.getElementById('inputSection');
+            const resultArea = document.getElementById('resultArea');
+            const detailsContainer = document.getElementById('detailsContainer');
+
+            if (!apptId) {
+                alert("Missing Appointment ID in URL. Please scan the QR code from your email.");
+                return;
+            }
+            if (otc.length !== 5) {
+                errorBox.textContent = "Please enter a 5-digit code.";
+                errorBox.style.display = "block";
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = "Verifying...";
+            errorBox.style.display = "none";
+
+            try {
+                const res = await fetch(`/api/appointments/verify/${apptId}/${otc}`);
+                const data = await res.json();
+
+                if (res.ok) {
+                    inputSection.style.display = "none";
+                    resultArea.style.display = "block";
+                    
+                    const d = data.details;
+                    detailsContainer.innerHTML = `
+                        <div class="detail-item">
+                            <div class="detail-label">Customer Name</div>
+                            <div class="detail-value">${d.client}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Phone</div>
+                            <div class="detail-value">${d.phone}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">House Category</div>
+                            <div class="detail-value">${d.type}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Architect Name</div>
+                            <div class="detail-value">${d.arch}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Date & Time</div>
+                            <div class="detail-value">${d.date} at ${d.time}</div>
+                        </div>
+                    `;
+                } else {
+                    errorBox.textContent = data.error || "Verification failed.";
+                    errorBox.style.display = "block";
+                    btn.disabled = false;
+                    btn.textContent = "Verify Now";
+                }
+            } catch (e) {
+                errorBox.textContent = "Server error. Please try again later.";
+                errorBox.style.display = "block";
+                btn.disabled = false;
+                btn.textContent = "Verify Now";
+            }
+        }
+
+        // Auto-focus input
+        document.getElementById('otcInput').focus();
+
+        // Allow Enter key
+        document.getElementById('otcInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') verifyCode();
+        });
+    </script>
+</body>
+</html>

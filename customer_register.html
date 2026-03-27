@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Login | OBSTRECTED</title>
+    <link rel="stylesheet" href="style/style.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0d2137 0%, #1a3a52 50%, #0d5c63 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-top: 90px;
+        }
+
+        .login-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .login-card {
+            background: rgba(255,255,255,0.97);
+            border-radius: 18px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            padding: 45px 50px;
+            width: 100%;
+            max-width: 480px;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity:0; transform: translateY(30px); }
+            to   { opacity:1; transform: translateY(0); }
+        }
+
+        .login-icon { text-align:center; font-size:48px; margin-bottom:10px; }
+
+        .login-card h2 {
+            text-align:center; font-size:28px; margin-bottom:5px; color:#0d2137;
+        }
+
+        .login-card .subtitle {
+            text-align:center; color:#777; font-size:14px; margin-bottom:30px;
+        }
+
+        .badge-panel {
+            display:inline-block;
+            background: #0d5c63;
+            color:white;
+            font-size:11px;
+            padding:2px 8px;
+            border-radius:20px;
+            margin-bottom:20px;
+        }
+
+        .form-group { margin-bottom:20px; }
+
+        .form-group label {
+            display:block; font-weight:600; margin-bottom:7px; color:#333; font-size:14px;
+        }
+
+        .form-group input {
+            width:100%; padding:12px 15px;
+            border:2px solid #e0e0e0; border-radius:10px;
+            font-size:15px; font-family:'Poppins',sans-serif;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            outline:none; background:#fafafa;
+        }
+
+        .form-group input:focus {
+            border-color: #17a2b8;
+            box-shadow: 0 0 0 3px rgba(23,162,184,0.15);
+            background: white;
+        }
+
+        .login-btn {
+            width:100%; padding:14px;
+            background: linear-gradient(135deg, #17a2b8, #0d5c63);
+            color:white; border:none; border-radius:10px;
+            font-size:16px; font-weight:600; cursor:pointer;
+            transition: all 0.3s; font-family:'Poppins',sans-serif;
+            margin-top:5px; letter-spacing:0.5px;
+        }
+
+        .login-btn:hover {
+            background: linear-gradient(135deg, #138496, #0a4a4f);
+            transform:translateY(-2px);
+            box-shadow: 0 8px 20px rgba(23,162,184,0.4);
+        }
+
+        .error-msg {
+            color:#dc3545; font-size:13px; text-align:center;
+            margin-top:12px; display:none; padding:10px;
+            background:rgba(220,53,69,0.1); border-radius:8px;
+        }
+
+        .credentials-hint {
+            margin-top:25px;
+            background: linear-gradient(135deg, #f0f9ff, #e0f7fa);
+            border:1px solid #b2ebf2;
+            border-radius:12px; padding:16px;
+        }
+
+        .credentials-hint h4 {
+            color:#0d2137; font-size:13px; margin-bottom:10px;
+            text-align:center; text-transform:uppercase; letter-spacing:0.5px;
+        }
+
+        .cred-table { width:100%; font-size:12px; border-collapse:collapse; }
+        .cred-table th {
+            color:#0d5c63; font-weight:600; text-align:left;
+            padding:4px 6px; border-bottom:1px solid #b2ebf2;
+        }
+        .cred-table td { color:#333; padding:4px 6px; }
+        .cred-table tr:hover td {
+            background:rgba(23,162,184,0.07); cursor:pointer;
+        }
+
+        .back-link { text-align:center; margin-top:18px; }
+        .back-link a {
+            color:#17a2b8; text-decoration:none; font-size:14px;
+            font-weight:500; transition:color 0.3s;
+        }
+        .back-link a:hover { color:#0d5c63; }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <header>
+        <div class="logo">OBSTRECTED</div>
+        <nav>
+            <ul>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="customer_login.html" style="color:#17a2b8;">Login Area</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="login-wrapper">
+        <div class="login-card">
+            <div class="login-icon">🏠</div>
+            <div style="text-align:center; margin-bottom:10px;">
+                <span class="badge-panel">CUSTOMER SETUP</span>
+            </div>
+            <h2>Customer Registration</h2>
+            <p class="subtitle">Create a new account to view your project</p>
+            
+            <div id="step-1">
+                <div class="form-group">
+                    <label for="cust-name">Full Name</label>
+                    <input type="text" id="cust-name" placeholder="e.g. Rohan Mehta" autocomplete="name">
+                </div>
+
+                <div class="form-group">
+                    <label for="cust-city">City</label>
+                    <input type="text" id="cust-city" placeholder="e.g. Ahmedabad">
+                </div>
+
+                <div class="form-group">
+                    <label for="cust-state">State</label>
+                    <input type="text" id="cust-state" placeholder="e.g. Gujarat">
+                </div>
+
+                <div class="form-group">
+                    <label for="cust-email">Email</label>
+                    <input type="email" id="cust-email" placeholder="e.g. rohan@email.com" autocomplete="email">
+                </div>
+
+                <div class="form-group">
+                    <label for="cust-username">Username</label>
+                    <input type="text" id="cust-username" placeholder="Enter your username" autocomplete="username">
+                </div>
+
+                <div class="form-group">
+                    <label for="cust-password">Password</label>
+                    <input type="password" id="cust-password" placeholder="Enter your password" autocomplete="current-password">
+                </div>
+
+                <button class="login-btn" type="button" onclick="sendOtp()" id="btn-send-otp">Send Verification Code</button>
+            </div>
+
+            <div id="step-2" style="display:none; margin-top:20px; padding-top:20px; border-top:1px solid #eee;">
+                <div class="form-group">
+                    <label for="cust-otp">Email Verification Code</label>
+                    <input type="text" id="cust-otp" placeholder="Enter 6-digit code" autocomplete="one-time-code" maxlength="6" style="text-align:center; letter-spacing:4px; font-weight:bold; font-size:18px;">
+                </div>
+                <button class="login-btn" type="button" onclick="customerRegister()" id="btn-register" style="background: linear-gradient(135deg, #28a745, #218838);">Verify & Create Account →</button>
+                <div style="text-align: center; margin-top: 15px;">
+                    <button type="button" onclick="sendOtp(true)" id="btn-resend" style="background:none; border:none; color:#007bff; cursor:pointer; font-size:14px; text-decoration:underline;">Resend Code</button>
+                </div>
+                <div style="text-align: center; margin-top: 5px;">
+                    <button type="button" onclick="backToStep1()" style="background:none; border:none; color:#666; cursor:pointer; font-size:12px;">← Edit details</button>
+                </div>
+            </div>
+
+            <div class="error-msg" id="cust-error">❌ Invalid username or password. Please try again.</div>
+
+            <!-- Credentials Reference Removed for Registration -->
+
+            <div class="back-link">
+                <a href="/index.html">← Already have an account? Sign In</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p style="text-align:center;padding:20px;background:#222;color:white;">
+            © 2026 OBSTRECTED Architecture | All Rights Reserved
+        </p>
+    </footer>
+
+    <script>
+        // fillCreds removed for registration
+
+        function backToStep1() {
+            document.getElementById('step-1').style.opacity = '1';
+            document.getElementById('step-1').style.pointerEvents = 'all';
+            document.getElementById('step-2').style.display = 'none';
+            document.getElementById('cust-error').style.display = 'none';
+        }
+
+        async function sendOtp(isResend = false) {
+            const email = document.getElementById('cust-email').value.trim();
+            const errorDiv = document.getElementById('cust-error');
+            const btn = isResend ? document.getElementById('btn-resend') : document.getElementById('btn-send-otp');
+            
+            if (!email) {
+                errorDiv.style.display = 'block';
+                errorDiv.style.background = 'rgba(220,53,69,0.1)';
+                errorDiv.style.color = '#dc3545';
+                errorDiv.textContent = '❌ Please enter your email first.';
+                if (isResend) backToStep1();
+                return;
+            }
+
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                errorDiv.style.display = 'block';
+                errorDiv.style.background = 'rgba(220,53,69,0.1)';
+                errorDiv.style.color = '#dc3545';
+                errorDiv.textContent = '❌ Please enter a valid email address.';
+                return;
+            }
+
+            btn.textContent = isResend ? 'Resending...' : 'Sending...';
+            btn.disabled = true;
+            errorDiv.style.display = 'none';
+
+            try {
+                const res = await fetch('/api/auth/send-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+
+                const data = await res.json();
+                
+                if (res.ok) {
+                    if (!isResend) {
+                        document.getElementById('step-1').style.opacity = '0.5';
+                        document.getElementById('step-1').style.pointerEvents = 'none';
+                        document.getElementById('step-2').style.display = 'block';
+                    }
+                    errorDiv.style.display = 'block';
+                    errorDiv.style.background = 'rgba(40,167,69,0.1)';
+                    errorDiv.style.color = '#155724';
+                    errorDiv.textContent = `✅ ${data.message || 'Verification code sent to your email!'}`;
+                } else {
+                    errorDiv.style.display = 'block';
+                    errorDiv.style.background = 'rgba(220,53,69,0.1)';
+                    errorDiv.style.color = '#dc3545';
+                    errorDiv.textContent = '❌ ' + (data.error || 'Failed to send OTP.');
+                }
+            } catch (e) {
+                errorDiv.style.display = 'block';
+                errorDiv.style.background = 'rgba(220,53,69,0.1)';
+                errorDiv.style.color = '#dc3545';
+                errorDiv.textContent = '❌ Server error. Is the server running?';
+            }
+            
+            btn.textContent = isResend ? 'Resend Code' : 'Send Verification Code';
+            btn.disabled = false;
+        }
+
+        async function customerRegister() {
+            const name = document.getElementById('cust-name').value.trim();
+            const city = document.getElementById('cust-city').value.trim();
+            const state = document.getElementById('cust-state').value.trim();
+            const email = document.getElementById('cust-email').value.trim();
+            const username = document.getElementById('cust-username').value.trim();
+            const password = document.getElementById('cust-password').value.trim();
+            const otp = document.getElementById('cust-otp').value.trim();
+            const errorDiv = document.getElementById('cust-error');
+            const btn = document.getElementById('btn-register');
+
+            // More granular validation
+            if (!name) return showErr("Please fill in your Full Name.");
+            if (!email) return showErr("Please fill in your Email.");
+            if (!username) return showErr("Please fill in your Username.");
+            if (!password) return showErr("Please fill in your Password.");
+            if (!otp) return showErr("Please enter the verification code.");
+
+            function showErr(msg) {
+                errorDiv.style.display = 'block';
+                errorDiv.style.background = 'rgba(220,53,69,0.1)';
+                errorDiv.style.color = '#dc3545';
+                errorDiv.textContent = '❌ ' + msg;
+                return false;
+            }
+
+            btn.textContent = 'Registering...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ role: 'customer', name, city, state, email, username, password, otp })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    alert('Registration successful! Please sign in with your new credentials.');
+                    window.location.href = '/index.html';
+                } else if (res.status === 409) {
+                    errorDiv.style.display = 'block';
+                    errorDiv.style.background = 'rgba(220,53,69,0.1)';
+                    errorDiv.style.color = '#dc3545';
+                    errorDiv.textContent = '❌ Username already taken.';
+                } else {
+                    errorDiv.style.display = 'block';
+                    errorDiv.style.background = 'rgba(220,53,69,0.1)';
+                    errorDiv.style.color = '#dc3545';
+                    errorDiv.textContent = '❌ ' + (data.error || 'Invalid Registration.');
+                    document.getElementById('cust-password').value = '';
+                }
+            } catch (e) {
+                errorDiv.style.display = 'block';
+                errorDiv.style.background = 'rgba(220,53,69,0.1)';
+                errorDiv.style.color = '#dc3545';
+                errorDiv.textContent = '❌ Server error. Is the server running?';
+            }
+
+            btn.textContent = 'Verify & Create Account →';
+            btn.disabled = false;
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') customerRegister();
+        });
+    </script>
+
+</body>
+</html>

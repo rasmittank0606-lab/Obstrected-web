@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+server/node_modules/
+
+# Database files (don't commit your DB to source control)
+server/obstrected.db
+server/obstrected.db-shm
+server/obstrected.db-wal
+server/sessions.db
+
+# Environment variables
+.env
+server/.env
+
+# OS & IDE
+.DS_Store
+.vscode/
+*.log

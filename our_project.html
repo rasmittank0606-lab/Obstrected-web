@@ -1,0 +1,140 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OBSTRECTED | Our Projects</title>
+    <link rel="stylesheet" href="style/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="guard.js"></script>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <header>
+        <div class="logo">OBSTRECTED</div>
+        <nav>     
+            <ul>
+                <li><a href="home.html">Home</a></li>
+                <li><a href="portfolio.html">portfolios</a></li>
+                <li><a href="our_project.html">Projects</a></li>
+                <li><a href="book_appointment.html">Book Appointment</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="architect_login.html">Architect Panel</a></li>
+                <li><a href="customer_login.html">Customer Panel</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Banner -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Our Projects</h1>
+            <p>Explore the spaces we've transformed with creativity and precision.</p>
+        </div>
+    </section><br><br>
+
+    <!-- Project Gallery Section -->
+    <section class="about">
+        <h2>Featured Projects</h2>
+        <div class="project-gallery">
+           <!--1.Apartments -->
+            <div class="project-card">
+                <img src="style/image/3.jpg" alt="Modern Villa">
+                <h3>Apartments</h3>
+                <p style="text-align: justify;">Apartments are stylish, space-efficient living solutions designed for urban comfort and modern lifestyles. OBSTRECTED crafts each apartment with a perfect blend of functionality and elegance.</p>
+                <center><a href="Apartments_Project_PDFs.html" class="btn">View Project</a></center>
+                <br>
+            </div>
+            <!--2.Villa -->
+            <div class="project-card">
+                <img src="style/image/4.png" alt="Modern Villa">
+                <h3>Villa</h3>
+                <p style="text-align: justify;">Villas offer luxurious, spacious living with a focus on privacy and premium design. OBSTRECTED specializes in crafting modern villas that combine elegance with smart living features.</p>
+                <center><a href="Villa_Project_PDFs.html" class="btn">View Project</a></center>
+                <br>
+            </div>
+            <!--3.Bunglow-->
+            <div class="project-card">
+                <img src="style/image/5.jpg" alt="Modern Villa">
+                <h3>Bunglow</h3>
+                <p style="text-align: justify;">Bungalows provide cozy, single-story living with timeless charm and comfort. OBSTRECTED transforms traditional bungalows with modern aesthetics and personalized design touches.</p>
+                <center><a href="Bunglow_Project_PDFs.html" class="btn">View Project</a></center>
+                <br>
+            </div>
+            <!--4.Duplex -->
+            <div class="project-card">
+                <img src="style/image/6.jpg" alt="Luxury Apartment">
+                <h3>Duplex</h3>
+                <p style="text-align: justify;">Duplex homes offer a perfect blend of space and privacy across two well-designed levels. OBSTRECTED creates duplexes that balance modern style with functional living for families and professionals alike.</p>
+                <center><a href="Duplex_Project_PDFs.html" class="btn">View Project</a></center>
+                <br>
+            </div>
+            <!--5.Penthouse -->
+            <div class="project-card">
+                <img src="style/image/7.webp" alt="Classic Bungalow">
+                <h3>Penthouse</h3>
+                <p style="text-align: justify;">Penthouses redefine luxury living with panoramic views, spacious layouts, and top-tier finishes. OBSTRECTED designs penthouses that elevate urban living to new heights of sophistication and comfort.</p>
+                <center><a href="Penthouse_Project_PDFs.html" class="btn">View Project</a></center>
+                <br>
+            </div>
+        </div><br>
+        <a href="#" class="btn" onclick="loadMore()">Load More Projects</a>
+    </section><br>
+
+    <!-- Pie Chart Section -->
+    <section class="about">
+        <h2>Project Distribution</h2>
+        <canvas id="projectPieChart" width="400" height="400"></canvas>
+    </section><br>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 OBSTRECTED. All rights reserved.</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        function loadMore() {
+            alert("More projects are coming soon!");
+        }
+
+        // Chart.js Pie Chart
+        const ctx = document.getElementById('projectPieChart').getContext('2d');
+        const projectPieChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Apartments', 'Villa', 'Bungalows', 'Duplex', 'Penthouse'],
+                datasets: [{
+                    label: 'Project Count',
+                    data: [12, 9, 6, 5, 7], // Update with actual project numbers
+                    backgroundColor: [
+                        '#28a745',
+                        '#007bff',
+                        '#ffc107',
+                        '#17a2b8',
+                        '#dc3545'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Types of Projects Completed by OBSTRECTED',
+                        font: {
+                            size: 18
+                        }
+                    },
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

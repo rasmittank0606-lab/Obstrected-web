@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Your House Design Appointment</title>
+
+    <link rel="stylesheet" href="style/style.css">
+    <script src="guard.js"></script>
+</head>
+
+<body class="appointment-page">
+
+    <!-- Navigation Bar -->
+    <header>
+
+        <div class="logo">OBSTRECTED</div>
+
+        <nav>
+            <ul>
+                <li><a href="home.html">Home</a></li>
+                <li><a href="portfolio.html">portfolios</a></li>
+                <li><a href="our_project.html">Projects</a></li>
+                <li><a href="book_appointment.html">Book Appointment</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="architect_login.html">Architect Panel</a></li>
+                <li><a href="customer_login.html">Customer Panel</a></li>
+            </ul>
+        </nav>
+
+    </header>
+
+    <div class="container">
+
+        <h2>Book an Appointment</h2>
+
+        <form id="appointmentForm">
+
+            <label for="name">Full Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">Email (Auto-filled from Registration):</label>
+            <input type="email" id="email" name="email" required readonly style="background-color: #e9ecef; color: #495057; cursor: not-allowed; border: 1px solid #ced4da;">
+            <span id="emailError" style="color:red; display:none;">Invalid email format</span>
+
+            <label for="phone">Phone:</label>
+            <input type="text" id="phone" name="phone" required>
+            <span id="phoneError" style="color:red; display:none;">Invalid phone number (10 digits required)</span>
+
+            <label for="house_category">House Category:</label>
+
+            <select id="house_category" name="house_category" required>
+                <option value="" disabled selected>Select a Category</option>
+                <option value="Apartment">Apartment</option>
+                <option value="Villa">Villa</option>
+                <option value="Bungalow">Bungalow</option>
+                <option value="Duplex">Duplex</option>
+                <option value="Penthouse">Penthouse</option>
+            </select>
+
+            <label for="architect">Architect Name:</label>
+
+            <select id="architect" name="architect" required>
+                <option value="" disabled selected>Select Architect</option>
+                <!-- Dynamically populated via script -->
+            </select>
+
+            <label for="date">Appointment Date:</label>
+            <input type="date" id="date" name="date" required>
+
+            <label for="time">Appointment Time:</label>
+            <select id="time" name="time" required>
+                <option value="" disabled selected>Select a time slot</option>
+                <option value="08:00">8:00 AM – 11:00 AM</option>
+                <option value="11:00">11:00 AM – 2:00 PM</option>
+                <option value="14:00">2:00 PM – 5:00 PM</option>
+                <option value="18:00">6:00 PM – 9:00 PM</option>
+            </select>
+
+            <label for="planning">Do you have any plans for your work?</label>
+            <select id="planning" name="planning" required>
+                <option value="" disabled selected>Select an option</option>
+                <option value="Yes, I have plans for my work.">Yes, I have plans for my work.</option>
+                <option value="No, I don't have any plans for my work.">No, I don't have any plans for my work.</option>
+            </select>
+
+            <button type="button" onclick="validateForm()">Confirm Appointment</button>
+
+        </form>
+
+    </div>
+
+    <script>
+        // Set date constraints: today to today + 10 days
+        (function() {
+            const today = new Date();
+            const maxDate = new Date();
+            maxDate.setDate(today.getDate() + 10);
+            const toISO = d => d.toISOString().split('T')[0];
+            const dateInput = document.getElementById('date');
+            dateInput.min = toISO(today);
+            dateInput.max = toISO(maxDate);
+        })();
+
+        // Dynamically fetch approved architects
+        fetch('/api/public/architects')
+            .then(r => r.json())
+            .then(data => {
+                if (data && data.architects) {
+                    const archSelect = document.getElementById('architect');
+                    archSelect.innerHTML = '<option value="" disabled selected>Select Architect</option>';
+                    data.architects.forEach(arch => {
+                        const opt = document.createElement('option');
+                        opt.value = arch.name;
+                        opt.textContent = arch.name;
+                        archSelect.appendChild(opt);
+                    });
+                }
+            })
+            .catch(err => console.error('Failed to load architects', err));
+
+        // Auto-fill logged in user email
+        fetch('/api/auth/me')
+            .then(r => r.ok ? r.json() : null)
+            .then(data => {
+                if (data && data.user && data.user.role === 'customer') {
+                    document.getElementById('email').value = data.user.email || data.user.username;
+                }
+            })
+            .catch(() => {});
+
+        // Show success banner if redirected back after booking
+        function validateForm() {
+            const email = document.getElementById("email").value;
+            const phone = document.getElementById("phone").value;
+            const emailError = document.getElementById("emailError");
+            const phoneError = document.getElementById("phoneError");
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const phonePattern = /^\d{10}$/;
+            let isValid = true;
+
+            emailError.style.display = emailPattern.test(email) ? "none" : "inline";
+            if (!emailPattern.test(email)) isValid = false;
+
+            phoneError.style.display = phonePattern.test(phone) ? "none" : "inline";
+            if (!phonePattern.test(phone)) isValid = false;
+
+            if (isValid) submitAppointment();
+        }
+
+        async function submitAppointment() {
+            const btn = document.querySelector('button[type="button"]');
+            btn.textContent = 'Booking…';
+            btn.disabled = true;
+
+            // Remove any previous messages
+            const oldMsg = document.getElementById('appt-message-banner');
+            if (oldMsg) oldMsg.remove();
+
+            const body = {
+                name:           document.getElementById("name").value,
+                email:          document.getElementById("email").value,
+                phone:          document.getElementById("phone").value,
+                house_category: document.getElementById("house_category").value,
+                architect:      document.getElementById("architect").value,
+                date:           document.getElementById("date").value,
+                time:           document.getElementById("time").value,
+                planning:       document.getElementById("planning").value
+            };
+
+            function showBanner(msg, isError) {
+                const banner = document.createElement('div');
+                banner.id = 'appt-message-banner';
+                banner.style.cssText = `
+                    padding: 16px 20px;
+                    border-radius: 10px;
+                    margin-top: 16px;
+                    font-size: 14px;
+                    font-weight: 600;
+                    text-align: center;
+                    background: ${isError ? 'rgba(220,53,69,0.12)' : '#d4edda'};
+                    color: ${isError ? '#c0392b' : '#155724'};
+                    border: 1.5px solid ${isError ? '#f5c6cb' : '#c3e6cb'};
+                `;
+                banner.textContent = msg;
+                document.getElementById('appointmentForm').appendChild(banner);
+            }
+
+            try {
+                const res  = await fetch('/api/appointments', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    showBanner('✅ Appointment booked successfully! Your architect will confirm shortly.', false);
+                    document.getElementById('appointmentForm').reset();
+                } else if (res.status === 429) {
+                    showBanner('⚠️ ' + data.error, true);
+                } else {
+                    showBanner('❌ ' + (data.error || 'Could not book appointment. Please try again.'), true);
+                }
+            } catch {
+                showBanner('❌ Server error. Please make sure the server is running.', true);
+            }
+
+            btn.textContent = 'Confirm Appointment';
+            btn.disabled = false;
+        }
+    </script>
+
+</body>
+
+</html>

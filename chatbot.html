@@ -1,0 +1,328 @@
+// ============================================================
+//  OBSTRECTED Chatbot — chatbot.js
+//  Connected to home.html via:  <script src="chatbot.js"></script>
+// ============================================================
+
+// ── STEP 1: Inject chatbot UI into the page ──
+document.body.insertAdjacentHTML('beforeend', `
+
+    <!-- Chatbot Button -->
+    <div onclick="toggleChat()" style="
+        position:fixed; bottom:24px; right:24px;
+        width:56px; height:56px; border-radius:50%;
+        background:linear-gradient(135deg,#28a745,#20c997);
+        display:flex; align-items:center; justify-content:center;
+        font-size:26px; cursor:pointer;
+        box-shadow:0 8px 24px rgba(40,167,69,0.45);
+        z-index:10000;">💬
+        <div id="unreadBadge" style="
+            position:absolute; top:0; right:0;
+            width:18px; height:18px; background:#dc3545;
+            border-radius:50%; border:2px solid white;
+            font-size:10px; color:white; font-weight:700;
+            display:flex; align-items:center; justify-content:center;">1</div>
+    </div>
+
+    <!-- Chatbot Box -->
+    <div id="chatbot" style="
+        display:none; flex-direction:column;
+        position:fixed; bottom:90px; right:24px;
+        width:360px; height:500px; border-radius:20px;
+        box-shadow:0 24px 64px rgba(0,0,0,0.25);
+        overflow:hidden; z-index:9999;
+        animation:popIn 0.25s cubic-bezier(0.34,1.56,0.64,1);">
+
+        <!-- Header -->
+        <div style="
+            background:linear-gradient(135deg,#28a745,#20c997);
+            padding:16px 20px; display:flex; align-items:center; gap:12px;">
+            <div style="
+                width:42px; height:42px; border-radius:50%;
+                background:rgba(255,255,255,0.2);
+                display:flex; align-items:center; justify-content:center; font-size:22px;">🏠</div>
+            <div style="flex:1;">
+                <div style="color:white; font-weight:700; font-size:15px;">OBSTRECTED Assistant</div>
+                <div style="display:flex; align-items:center; gap:5px;">
+                    <div style="width:7px; height:7px; background:#90ff90; border-radius:50%;"></div>
+                    <span style="color:rgba(255,255,255,0.85); font-size:12px;">Always here to help</span>
+                </div>
+            </div>
+            <span onclick="toggleChat()" style="
+                cursor:pointer; color:white; font-size:20px;
+                background:rgba(255,255,255,0.15);
+                width:30px; height:30px; border-radius:50%;
+                display:flex; align-items:center; justify-content:center;">✖</span>
+        </div>
+
+        <!-- Messages -->
+        <div id="chatBody" style="
+            flex:1; overflow-y:auto; padding:16px;
+            display:flex; flex-direction:column; gap:10px;
+            background:#f9f9fb; font-family:sans-serif; font-size:14px;">
+
+            <div style="display:flex; gap:8px; align-items:flex-end;">
+                <div style="
+                    width:28px; height:28px; min-width:28px; border-radius:50%;
+                    background:linear-gradient(135deg,#28a745,#20c997);
+                    display:flex; align-items:center; justify-content:center; font-size:14px;">🏠</div>
+                <div style="
+                    background:white; padding:10px 14px;
+                    border-radius:18px 18px 18px 4px;
+                    box-shadow:0 2px 8px rgba(0,0,0,0.07);
+                    max-width:78%; line-height:1.5; color:#1a1a2e;">
+                    Hello! Welcome to <b>OBSTRECTED</b> 👋<br>How can I help you today?
+                </div>
+            </div>
+
+            <!-- Quick Suggestions -->
+            <div id="suggestions" style="display:flex; flex-wrap:wrap; gap:6px; padding-left:36px;">
+                <button onclick="sendMessage('Book Appointment')"   style="padding:5px 12px; border:1.5px solid #28a745; border-radius:20px; background:white; color:#28a745; font-size:12px; cursor:pointer;">📅 Book Appointment</button>
+                <button onclick="sendMessage('Our Projects')"       style="padding:5px 12px; border:1.5px solid #28a745; border-radius:20px; background:white; color:#28a745; font-size:12px; cursor:pointer;">🏗️ Our Projects</button>
+                <button onclick="sendMessage('Pricing')"            style="padding:5px 12px; border:1.5px solid #28a745; border-radius:20px; background:white; color:#28a745; font-size:12px; cursor:pointer;">💰 Pricing</button>
+                <button onclick="sendMessage('Contact Us')"         style="padding:5px 12px; border:1.5px solid #28a745; border-radius:20px; background:white; color:#28a745; font-size:12px; cursor:pointer;">📞 Contact Us</button>
+                <button onclick="sendMessage('How is design made')" style="padding:5px 12px; border:1.5px solid #28a745; border-radius:20px; background:white; color:#28a745; font-size:12px; cursor:pointer;">🎨 Design Process</button>
+                <button onclick="sendMessage('Download PDFs')"      style="padding:5px 12px; border:1.5px solid #28a745; border-radius:20px; background:white; color:#28a745; font-size:12px; cursor:pointer;">📄 Download PDFs</button>
+            </div>
+        </div>
+
+        <!-- Input -->
+        <div style="
+            padding:12px 16px; background:white;
+            border-top:1px solid #f0f0f5;
+            display:flex; gap:10px; align-items:center;">
+            <input id="userInput" type="text" placeholder="Type a message..."
+                onkeydown="if(event.key==='Enter') sendMessage()"
+                style="flex:1; border:1.5px solid #c3e6cb; border-radius:24px;
+                       padding:10px 16px; font-size:14px;
+                       background:#f9f9fb; color:#1a1a2e; outline:none;">
+            <button onclick="sendMessage()" style="
+                width:40px; height:40px; border-radius:50%;
+                background:linear-gradient(135deg,#28a745,#20c997);
+                border:none; cursor:pointer;
+                display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M22 2L11 13" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+                    <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Chatbot Animations -->
+    <style>
+        @keyframes popIn    { from{opacity:0;transform:scale(0.85) translateY(16px)} to{opacity:1;transform:scale(1) translateY(0)} }
+        @keyframes fadeSlide{ from{opacity:0;transform:translateY(8px)}              to{opacity:1;transform:translateY(0)} }
+        @keyframes bounce   { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-5px)} }
+    </style>
+`);
+
+
+// ── STEP 2: Bot knowledge data ──
+const BOT_DATA = [
+    {
+        keywords: ["hello","hi","hey","good morning","good evening","start","help"],
+        reply: "👋 Hello! Welcome to OBSTRECTED!\n\nI can help you with:\n• 📅 Booking appointments\n• 🏗️ Our projects\n• 💰 Pricing info\n• 🎨 Design process\n• 📞 Contact details\n\nWhat would you like to know?"
+    },
+    {
+        keywords: ["appointment","book","booking","schedule","meeting","visit","slot"],
+        reply: "📅 Booking is easy!\n\n1. Click 'Book Appointment' in the menu\n2. Fill in your name, email & phone\n3. Choose your house category\n4. Add rooms, toilets & requirements\n\nOr → <a href='book_appointment.html' style='color:#28a745;'>Book Now</a>"
+    },
+    {
+        keywords: ["project","projects","work","portfolio","completed","done"],
+        reply: "🏗️ Our completed projects:\n\n🏢 Apartments – 12 projects\n🏡 Villas – 9 projects\n🏠 Bungalows – 6 projects\n🏘️ Duplexes – 5 projects\n🌆 Penthouses – 7 projects\n\nTotal: 39 completed!\n\n→ <a href='our_project.html' style='color:#28a745;'>View All Projects</a>"
+    },
+    {
+        keywords: ["apartment","apartments","flat","flats"],
+        reply: "🏢 Apartments by OBSTRECTED:\n\n✅ Studio to 4BHK available\n✅ Modern kitchen & bathroom design\n✅ Smart storage solutions\n\n→ <a href='Apartments_Project_PDFs.html' style='color:#28a745;'>View Apartment PDFs</a>"
+    },
+    {
+        keywords: ["villa","villas"],
+        reply: "🏡 Villas by OBSTRECTED:\n\n✅ Private gardens & pools\n✅ Premium material selection\n✅ Smart home integration\n\n→ <a href='Villa_Project_PDFs.html' style='color:#28a745;'>View Villa PDFs</a>"
+    },
+    {
+        keywords: ["bungalow","bunglow","bungalows"],
+        reply: "🏠 Bungalows by OBSTRECTED:\n\n✅ Open floor plans\n✅ Large verandas & outdoor spaces\n✅ Traditional + modern fusion\n\n→ <a href='Bunglow_Project_PDFs.html' style='color:#28a745;'>View Bungalow PDFs</a>"
+    },
+    {
+        keywords: ["duplex","duplexes"],
+        reply: "🏘️ Duplexes by OBSTRECTED:\n\n✅ Separate living zones per floor\n✅ Perfect for joint families\n\n→ <a href='Duplex_Project_PDFs.html' style='color:#28a745;'>View Duplex PDFs</a>"
+    },
+    {
+        keywords: ["penthouse","penthouses"],
+        reply: "🌆 Penthouses by OBSTRECTED:\n\n✅ Rooftop terrace designs\n✅ Floor-to-ceiling glass walls\n✅ Private elevator access\n\n→ <a href='Penthouse_Project_PDFs.html' style='color:#28a745;'>View Penthouse PDFs</a>"
+    },
+    {
+        keywords: ["how","design","made","process","create","build","steps","procedure","make"],
+        reply: "🎨 Our Design Process:\n\n1️⃣ Consultation – Understand your needs & budget\n2️⃣ Site Analysis – Study the space & light\n3️⃣ Concept Design – Initial concepts\n4️⃣ 3D Visualization – See your space before it's built\n5️⃣ Final Planning – Floor plans finalized\n6️⃣ Execution – Design comes to life\n7️⃣ Handover – Final walkthrough & delivery\n\n⏱️ Average: 4–12 weeks\n\n→ <a href='book_appointment.html' style='color:#28a745;'>Start Your Project</a>"
+    },
+    {
+        keywords: ["3d","visualization","render","rendering"],
+        reply: "🖥️ 3D Visualization:\n\n✅ See exactly how your home will look\n✅ Try different color schemes\n✅ Test furniture arrangements\n✅ Make changes before execution\n\nIncluded in all packages!\n\n→ <a href='book_appointment.html' style='color:#28a745;'>Book a Consultation</a>"
+    },
+    {
+        keywords: ["interior","decor","decoration","furniture","furnishing"],
+        reply: "🛋️ Interior Design Services:\n\n✅ Living room & bedroom design\n✅ Kitchen & bathroom planning\n✅ Custom furniture selection\n✅ Lighting & color palette\n✅ Flooring & wall treatment\n\n→ <a href='book_appointment.html' style='color:#28a745;'>Book a Free Consultation</a>"
+    },
+    {
+        keywords: ["material","materials","marble","tile","wood","flooring"],
+        reply: "🏗️ Materials We Use:\n\n✅ Italian & Indian marble\n✅ Engineered hardwood flooring\n✅ Anti-skid bathroom tiles\n✅ Eco-friendly paints\n✅ Toughened glass\n\n→ <a href='book_appointment.html' style='color:#28a745;'>Discuss Requirements</a>"
+    },
+    {
+        keywords: ["color","colour","paint","palette","theme","scheme"],
+        reply: "🎨 Color & Theme Consultation:\n\n✅ Warm & earthy tones for cozy homes\n✅ Cool & minimal for modern spaces\n✅ Bold & vibrant for contemporary design\n✅ Classic whites for timeless looks\n\n→ <a href='book_appointment.html' style='color:#28a745;'>Book Color Consultation</a>"
+    },
+    {
+        keywords: ["kitchen","modular kitchen","kitchen design"],
+        reply: "🍳 Kitchen Design:\n\n✅ Modular layouts (L, U, Parallel, Island)\n✅ Custom cabinets & countertops\n✅ Chimney & appliance integration\n✅ Budget & premium options\n\n→ <a href='book_appointment.html' style='color:#28a745;'>Design Your Kitchen</a>"
+    },
+    {
+        keywords: ["bathroom","washroom","toilet","bath"],
+        reply: "🚿 Bathroom Design:\n\n✅ Premium sanitary fittings\n✅ Walk-in shower designs\n✅ Anti-skid & waterproof tiles\n✅ Warm lighting setups\n\n→ <a href='book_appointment.html' style='color:#28a745;'>Design Your Bathroom</a>"
+    },
+    {
+        keywords: ["bedroom","master bedroom","kids room"],
+        reply: "🛏️ Bedroom Design:\n\n✅ Master bedroom with walk-in wardrobes\n✅ Kids rooms with safe designs\n✅ Custom bed & headboard\n✅ Study nook integration\n\n→ <a href='book_appointment.html' style='color:#28a745;'>Design Your Bedroom</a>"
+    },
+    {
+        keywords: ["landscape","garden","outdoor","lawn","terrace","balcony"],
+        reply: "🌿 Landscape & Outdoor Design:\n\n✅ Garden & lawn planning\n✅ Terrace & rooftop gardens\n✅ Balcony makeovers\n✅ Water features & pathways\n\n→ <a href='book_appointment.html' style='color:#28a745;'>Plan Outdoor Space</a>"
+    },
+    {
+        keywords: ["time","timeline","duration","how long","weeks","months","deadline"],
+        reply: "⏱️ Project Timelines:\n\n🏢 Apartment – 4 to 6 weeks\n🏡 Villa – 8 to 12 weeks\n🏠 Bungalow – 6 to 10 weeks\n🏘️ Duplex – 7 to 11 weeks\n🌆 Penthouse – 8 to 14 weeks\n\n→ <a href='book_appointment.html' style='color:#28a745;'>Discuss Timeline</a>"
+    },
+    {
+        keywords: ["price","cost","pricing","charges","fees","how much","budget","rate","quote"],
+        reply: "💰 Pricing at OBSTRECTED:\n\n🏢 Apartment – ₹500 to ₹1500/sq.ft\n🏡 Villa – ₹800 to ₹2500/sq.ft\n🏠 Bungalow – ₹600 to ₹2000/sq.ft\n\n💡 Packages for every budget!\n\n→ <a href='book_appointment.html' style='color:#28a745;'>Get a Free Quote</a>"
+    },
+    {
+        keywords: ["emi","installment","payment","pay","advance","loan"],
+        reply: "💳 Payment Options:\n\n✅ 30% advance to start project\n✅ Milestone-based installments\n✅ Balance on completion\n✅ No hidden charges\n\n→ <a href='book_appointment.html' style='color:#28a745;'>Book a Consultation</a>"
+    },
+    {
+        keywords: ["team","designer","architect","staff","expert","professional"],
+        reply: "👷 Our Expert Team:\n\n✅ Experienced interior designers\n✅ Certified architects\n✅ 3D visualization artists\n✅ Project managers\n✅ Site supervisors\n\n10+ years combined experience!\n\n→ <a href='home.html#about' style='color:#28a745;'>Learn About Us</a>"
+    },
+    {
+        keywords: ["warranty","guarantee","after service","maintenance","complaint","issue"],
+        reply: "🛡️ After-Service & Warranty:\n\n✅ 1-year warranty on all work\n✅ Free touch-up within 6 months\n✅ Dedicated post-project support\n\n📧 harshvadgama534@gmail.com\n📱 9081248681"
+    },
+    {
+        keywords: ["location","address","where","office","city","rajkot","gujarat","india"],
+        reply: "📍 OBSTRECTED Location:\n\nBased in Gujarat, India:\n✅ Rajkot  ✅ Ahmedabad\n✅ Surat   ✅ Vadodara\n\nRemote consultation available!\n\n→ <a href='home.html#contact' style='color:#28a745;'>Contact Us</a>"
+    },
+    {
+        keywords: ["pdf","download","floor plan","plan","document","file","brochure"],
+        reply: "📄 Download Project PDFs:\n\n→ <a href='Apartments_Project_PDFs.html' style='color:#28a745;'>Apartments</a>\n→ <a href='Villa_Project_PDFs.html' style='color:#28a745;'>Villas</a>\n→ <a href='Bunglow_Project_PDFs.html' style='color:#28a745;'>Bungalows</a>\n→ <a href='Duplex_Project_PDFs.html' style='color:#28a745;'>Duplexes</a>\n→ <a href='Penthouse_Project_PDFs.html' style='color:#28a745;'>Penthouses</a>"
+    },
+    {
+        keywords: ["contact","reach","phone","email","call","number","whatsapp"],
+        reply: "📞 Contact OBSTRECTED:\n\n📧 harshvadgama534@gmail.com\n📧 rasmit.tank0606@gmail.com\n📱 9081248681\n📱 9773402935\n\n🕐 Mon–Sat: 9 AM – 7 PM\n\n→ <a href='home.html#contact' style='color:#28a745;'>Go to Contact Section</a>"
+    },
+    {
+        keywords: ["about","who are you","company","obstrected","founded","history"],
+        reply: "🏛️ About OBSTRECTED:\n\n✅ 10+ years combined experience\n✅ 39+ projects completed\n✅ 100% client satisfaction\n✅ Custom designs for every budget\n\n→ <a href='home.html#about' style='color:#28a745;'>Read More About Us</a>"
+    },
+    {
+        keywords: ["hours","working hours","open","available","timing","sunday","holiday"],
+        reply: "🕐 Working Hours:\n\nMon – Sat: 9:00 AM – 7:00 PM\nSunday: By appointment only\nPublic Holidays: Closed\n\nUrgent? WhatsApp: 9081248681\n\n→ <a href='book_appointment.html' style='color:#28a745;'>Book Your Slot</a>"
+    },
+    {
+        keywords: ["vastu","vaastu","vastu shastra","direction","east","north","south","west"],
+        reply: "🧭 Vastu Shastra Compliance:\n\n✅ Entrance & door directions\n✅ Kitchen – South-East\n✅ Master bedroom – South-West\n✅ Pooja room – North-East\n\n→ <a href='book_appointment.html' style='color:#28a745;'>Book Vastu Consultation</a>"
+    },
+    {
+        keywords: ["smart","automation","smart home","iot","alexa","google home"],
+        reply: "🏠 Smart Home Integration:\n\n✅ Automated lighting systems\n✅ Smart security cameras\n✅ Voice-controlled devices\n✅ Automated curtains & AC\n\n→ <a href='book_appointment.html' style='color:#28a745;'>Add Smart Features</a>"
+    },
+    {
+        keywords: ["eco","green","sustainable","solar","natural","environment"],
+        reply: "🌱 Eco-Friendly Design:\n\n✅ Natural lighting optimization\n✅ Eco-friendly & low-VOC paints\n✅ Sustainable materials\n✅ Solar panel space planning\n\n→ <a href='book_appointment.html' style='color:#28a745;'>Go Green With Us</a>"
+    },
+    {
+        keywords: ["renovate","renovation","remodel","old house","upgrade","makeover","redo"],
+        reply: "🔨 Renovation & Makeover:\n\n✅ Full home renovation\n✅ Single room makeovers\n✅ False ceiling & lighting\n✅ Flooring replacement\n\n→ <a href='book_appointment.html' style='color:#28a745;'>Start Your Renovation</a>"
+    },
+    {
+        keywords: ["new construction","new home","new house","under construction","new build"],
+        reply: "🏗️ New Construction Design:\n\n✅ Complete architectural planning\n✅ Room size & placement guidance\n✅ Utility & electrical planning\n✅ Exterior façade design\n\n→ <a href='book_appointment.html' style='color:#28a745;'>Plan Your New Home</a>"
+    },
+    {
+        keywords: ["thank","thanks","thank you","great","awesome","nice","helpful","perfect"],
+        reply: "😊 You're very welcome!\n\nFeel free to ask anything else!\n\n→ <a href='book_appointment.html' style='color:#28a745;'>Book an Appointment</a>"
+    },
+    {
+        keywords: ["bye","goodbye","see you","later","exit","quit"],
+        reply: "👋 Goodbye! Thank you for visiting OBSTRECTED.\n\nWe're here whenever you're ready!\n📱 9081248681\n📧 harshvadgama534@gmail.com"
+    }
+];
+
+const FALLBACK = [
+    "I'm not sure about that. Please call us at 📱 9081248681 or email harshvadgama534@gmail.com",
+    "For more details, <a href='book_appointment.html' style='color:#28a745;'>book a free consultation</a>.",
+    "I don't have that info. Would you like to <a href='book_appointment.html' style='color:#28a745;'>speak with our design team</a>?",
+    "Our team can answer that! Call 📱 9773402935 or <a href='book_appointment.html' style='color:#28a745;'>book a meeting</a>."
+];
+
+
+// ── STEP 3: Chatbot functions ──
+function getReply(text) {
+    const lower = text.toLowerCase();
+    const match = BOT_DATA.find(f => f.keywords.some(k => lower.includes(k)));
+    return match ? match.reply : FALLBACK[Math.floor(Math.random() * FALLBACK.length)];
+}
+
+function toggleChat() {
+    const chat  = document.getElementById("chatbot");
+    const badge = document.getElementById("unreadBadge");
+    if (chat.style.display === "flex") {
+        chat.style.display = "none";
+    } else {
+        chat.style.display = "flex";
+        if (badge) badge.style.display = "none";
+    }
+}
+
+function addMessage(text, from) {
+    const chatBody = document.getElementById("chatBody");
+    const isBot    = from === "bot";
+    const div      = document.createElement("div");
+    div.style.cssText = `display:flex; gap:8px; align-items:flex-end; justify-content:${isBot ? "flex-start" : "flex-end"}; animation:fadeSlide 0.2s ease;`;
+    div.innerHTML = isBot
+        ? `<div style="width:28px;height:28px;min-width:28px;border-radius:50%;background:linear-gradient(135deg,#28a745,#20c997);display:flex;align-items:center;justify-content:center;font-size:14px;">🏠</div>
+           <div style="background:white;padding:10px 14px;border-radius:18px 18px 18px 4px;box-shadow:0 2px 8px rgba(0,0,0,0.07);max-width:78%;line-height:1.6;color:#1a1a2e;white-space:pre-line;">${text}</div>`
+        : `<div style="background:linear-gradient(135deg,#28a745,#20c997);padding:10px 14px;border-radius:18px 18px 4px 18px;box-shadow:0 2px 8px rgba(0,0,0,0.07);max-width:78%;line-height:1.5;color:white;">${text}</div>`;
+    chatBody.appendChild(div);
+    chatBody.scrollTop = chatBody.scrollHeight;
+}
+
+function sendMessage(overrideText) {
+    const input   = document.getElementById("userInput");
+    const message = overrideText || input.value.trim();
+    if (!message) return;
+
+    const sug = document.getElementById("suggestions");
+    if (sug) sug.style.display = "none";
+
+    addMessage(message, "user");
+    input.value = "";
+
+    const chatBody  = document.getElementById("chatBody");
+    const typingDiv = document.createElement("div");
+    typingDiv.id    = "typingIndicator";
+    typingDiv.style.cssText = "display:flex;gap:8px;align-items:flex-end;";
+    typingDiv.innerHTML = `
+        <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#28a745,#20c997);display:flex;align-items:center;justify-content:center;font-size:14px;">🏠</div>
+        <div style="background:white;padding:12px 16px;border-radius:18px 18px 18px 4px;box-shadow:0 2px 8px rgba(0,0,0,0.07);display:flex;gap:4px;">
+            <div style="width:7px;height:7px;background:#28a745;border-radius:50%;animation:bounce 1.2s 0s infinite;"></div>
+            <div style="width:7px;height:7px;background:#28a745;border-radius:50%;animation:bounce 1.2s 0.2s infinite;"></div>
+            <div style="width:7px;height:7px;background:#28a745;border-radius:50%;animation:bounce 1.2s 0.4s infinite;"></div>
+        </div>`;
+    chatBody.appendChild(typingDiv);
+    chatBody.scrollTop = chatBody.scrollHeight;
+
+    setTimeout(() => {
+        document.getElementById("typingIndicator")?.remove();
+        addMessage(getReply(message), "bot");
+    }, 900 + Math.random() * 400);
+}

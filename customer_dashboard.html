@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Dashboard | OBSTRECTED</title>
+    <link rel="stylesheet" href="style/style.css">
+    <script src="guard.js"></script>
+    <style>
+        body { background: #eef6f8; padding-top: 90px; }
+
+        /* dashboard spacing — no big top bar */
+
+        /* ---- Layout ---- */
+        .dashboard-container {
+            max-width: 1100px; margin: 0 auto; padding: 0 30px 50px;
+        }
+
+        /* ---- Profile Card ---- */
+        .profile-card {
+            background: white; border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+            padding: 28px; display: flex;
+            align-items: center; gap: 24px; margin-bottom: 28px;
+        }
+
+        .profile-avatar {
+            width: 80px; height: 80px; border-radius: 50%;
+            background: linear-gradient(135deg, #17a2b8, #0d2137);
+            display: flex; align-items: center;
+            justify-content: center; font-size: 32px; flex-shrink: 0;
+        }
+
+        .profile-info h3 { font-size: 22px; color: #0d2137; margin-bottom: 5px; }
+        .profile-info p  { font-size: 14px; color: #666; margin-bottom: 4px; }
+
+        .info-pills { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+        .info-pill {
+            background: #e0f7fa; color: #0d5c63; border-radius: 20px;
+            padding: 4px 14px; font-size: 13px; font-weight: 500;
+        }
+
+        /* ---- Stats ---- */
+        .stats-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 20px; margin-bottom: 28px;
+        }
+
+        .stat-card {
+            background: white; border-radius: 14px; padding: 22px;
+            text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+            border-top: 4px solid #17a2b8; transition: transform 0.3s;
+        }
+
+        .stat-card:nth-child(2) { border-top-color: #28a745; }
+        .stat-card:nth-child(3) { border-top-color: #ffc107; }
+        .stat-card:nth-child(4) { border-top-color: #dc3545; }
+        .stat-card:hover { transform: translateY(-4px); }
+        .stat-card .stat-icon { font-size: 30px; margin-bottom: 8px; }
+        .stat-card .stat-num  { font-size: 32px; font-weight: 700; color: #0d2137; }
+        .stat-card .stat-label{ font-size: 13px; color: #777; }
+
+        /* ---- Section Titles ---- */
+        .section-title {
+            font-size: 20px; font-weight: 700; color: #0d2137;
+            margin-bottom: 15px; display: flex; align-items: center; gap: 8px;
+        }
+
+        /* ---- Table Cards ---- */
+        .table-card {
+            background: white; border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+            overflow: hidden; margin-bottom: 28px;
+        }
+
+        .table-card table { width: 100%; border-collapse: collapse; }
+
+        .table-card thead {
+            background: linear-gradient(135deg, #0d2137, #0d5c63); color: white;
+        }
+
+        .table-card thead th {
+            padding: 14px 18px; text-align: left; font-size: 13px;
+            font-weight: 600; letter-spacing: 0.5px;
+        }
+
+        .table-card tbody tr { border-bottom: 1px solid #f0f0f0; transition: background 0.2s; }
+        .table-card tbody tr:last-child { border-bottom: none; }
+        .table-card tbody tr:hover { background: #f0fafc; }
+        .table-card tbody td { padding: 13px 18px; font-size: 14px; color: #444; }
+
+        /* ---- Status ---- */
+        .status {
+            display: inline-block; padding: 4px 12px;
+            border-radius: 20px; font-size: 12px; font-weight: 600;
+        }
+        .status-confirmed { background: #d4edda; color: #155724; }
+        .status-pending   { background: #fff3cd; color: #856404; }
+        .status-completed { background: #cce5ff; color: #004085; }
+        .status-inprogress{ background: #fde8d8; color: #8a4500; }
+
+        /* ---- Project Card ---- */
+        .project-detail-card {
+            background: white; border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+            padding: 28px; margin-bottom: 28px;
+            border-left: 6px solid #17a2b8;
+        }
+
+        .project-detail-card h3 { font-size: 20px; color: #0d2137; margin-bottom: 12px; }
+
+        .detail-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px;
+        }
+
+        .detail-item label { font-size: 12px; color: #999; font-weight: 600; text-transform: uppercase; }
+        .detail-item p     { font-size: 15px; color: #222; font-weight: 500; margin-top: 3px; }
+
+        .progress-bar-wrap {
+            background: #eee; border-radius: 10px; height: 12px; margin-top: 12px;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #17a2b8, #0d5c63);
+            height: 12px; border-radius: 10px; transition: width 1.2s ease;
+        }
+
+        .progress-label { font-size: 13px; color: #555; margin-top: 6px; font-weight: 600; }
+
+        /* ---- Milestones ---- */
+        .milestones { display: flex; flex-direction: column; gap: 12px; }
+
+        .milestone {
+            display: flex; align-items: center; gap: 14px;
+            background: #f7fbfc; border-radius: 10px; padding: 12px 16px;
+        }
+
+        .milestone-icon { font-size: 22px; width: 36px; text-align: center; }
+        .milestone-text h5 { font-size: 14px; color: #0d2137; margin: 0; }
+        .milestone-text p  { font-size: 12px; color: #888; margin: 2px 0 0; }
+        .milestone.done    { opacity: 1; }
+        .milestone.pending { opacity: 0.5; }
+
+        /* ---- Responsive ---- */
+        @media(max-width:900px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .detail-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media(max-width:600px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .detail-grid { grid-template-columns: 1fr; }
+            .dash-topbar { flex-direction:column; gap:12px; text-align:center; }
+            .profile-card { flex-direction: column; text-align: center; }
+            .info-pills { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <header>
+        <div class="logo">OBSTRECTED</div>
+        <nav>
+            <ul>
+                <li><a href="home.html">Home</a></li>
+                <li><a href="portfolio.html">Portfolios</a></li>
+                <li><a href="our_project.html">Projects</a></li>
+                <li><a href="book_appointment.html">Book Appointment</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="customer_dashboard.html" style="color:#17a2b8;">Customer Panel</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Welcome strip (lightweight, no big panel) -->
+    <div style="max-width:1100px;margin:18px auto 0;padding:0 30px;">
+        <h2 id="welcomeName" style="font-size:20px;color:#0d2137;font-weight:700;">Welcome 👋</h2>
+        <p id="welcomeSub" style="font-size:13px;color:#888;margin-top:3px;">Loading...</p>
+    </div>
+
+    <div class="dashboard-container">
+
+        <!-- Profile Card -->
+        <div class="profile-card">
+            <div class="profile-avatar">🏠</div>
+            <div class="profile-info">
+                <h3 id="profileName">—</h3>
+                <p id="profileCity">—</p>
+                <div class="info-pills">
+                    <span class="info-pill" id="pillType">—</span>
+                    <span class="info-pill" id="pillBudget">—</span>
+                    <span class="info-pill" id="pillArch">—</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📅</div>
+                <div class="stat-num" id="statAppts">1</div>
+                <div class="stat-label">Appointments</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🏗️</div>
+                <div class="stat-num">1</div>
+                <div class="stat-label">Active Projects</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💬</div>
+                <div class="stat-num" id="statMsgs">2</div>
+                <div class="stat-label">Messages</div>
+            </div>
+        </div>
+
+        <!-- My Project -->
+        <div class="section-title">🏗️ My Project</div>
+        <div class="project-detail-card" id="projectCard">
+            <h3 id="projectName">—</h3>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <label>House Type</label>
+                    <p id="detailType">—</p>
+                </div>
+                <div class="detail-item">
+                    <label>Assigned Architect</label>
+                    <p id="detailArch">—</p>
+                </div>
+                <div class="detail-item">
+                    <label>Budget</label>
+                    <p id="detailBudget">—</p>
+                </div>
+                <div class="detail-item">
+                    <label>City</label>
+                    <p id="detailCity">—</p>
+                </div>
+                <div class="detail-item">
+                    <label>Start Date</label>
+                    <p id="detailStart">—</p>
+                </div>
+                <div class="detail-item">
+                    <label>Est. Completion</label>
+                    <p id="detailEnd">—</p>
+                </div>
+            </div>
+            <div class="progress-bar-wrap">
+                <div class="progress-bar" id="progressBar" style="width:0%"></div>
+            </div>
+            <p class="progress-label" id="progressLabel">Loading...</p>
+        </div>
+
+        <!-- Project Milestones -->
+        <div class="section-title">🎯 Project Milestones</div>
+        <div class="table-card" style="padding:20px;">
+            <div class="milestones" id="milestones">
+                <!-- Filled by JS -->
+            </div>
+        </div>
+
+        <!-- Appointments -->
+        <div class="section-title">📅 My Appointments</div>
+        <div class="table-card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Architect</th>
+                        <th>House Type</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="apptTable"></tbody>
+            </table>
+        </div>
+
+
+    </div>
+
+    <footer>
+        <p style="text-align:center;padding:20px;background:#222;color:white;">
+            © 2026 OBSTRECTED Architecture | All Rights Reserved
+        </p>
+    </footer>
+
+    <script>
+        const milestonesData = [
+            { icon:'📋', label:'Initial Consultation',   date:'Week 1',    done: true  },
+            { icon:'📐', label:'Concept Design',          date:'Week 3',    done: true  },
+            { icon:'🏗️', label:'Structural Planning',    date:'Week 6',    done: null  },
+            { icon:'🔧', label:'Foundation & Structure',  date:'Month 3',   done: false },
+            { icon:'🏠', label:'Construction Phase',      date:'Month 6',   done: false },
+            { icon:'🎨', label:'Interior & Finishing',    date:'Month 9',   done: false },
+            { icon:'✅', label:'Handover',                date:'Month 12',  done: false },
+        ];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const [dashRes, apptRes] = await Promise.all([
+                    fetch('/api/customer/dashboard').then(r => r.ok ? r.json() : null),
+                    fetch('/api/customer/appointments').then(r => r.ok ? r.json() : null)
+                ]);
+
+                if (!dashRes) return; // guard.js handles unauthorized
+
+                const user = dashRes.customer;
+                const pData = dashRes.project;
+                const appointments = apptRes ? apptRes.appointments : [];
+
+                // Top bar + profile
+                document.getElementById('welcomeName').textContent = 'Welcome, ' + user.name + ' 👋';
+                document.getElementById('welcomeSub').textContent  = user.houseType + ' Project · ' + user.city;
+                document.getElementById('profileName').textContent = user.name;
+                document.getElementById('profileCity').textContent = '📍 ' + user.city;
+                document.getElementById('pillType').textContent    = '🏠 ' + user.houseType;
+                document.getElementById('pillBudget').textContent  = '💰 ' + user.budget;
+                document.getElementById('pillArch').textContent    = '👷 ' + user.architect;
+
+                // Stats
+                document.getElementById('statAppts').textContent = appointments.length;
+                document.getElementById('statMsgs').textContent = "0";
+
+                // Project card
+                document.getElementById('projectName').textContent   = pData.projectName;
+                document.getElementById('detailType').textContent    = user.houseType;
+                document.getElementById('detailArch').textContent    = user.architect;
+                document.getElementById('detailBudget').textContent  = user.budget;
+                document.getElementById('detailCity').textContent    = user.city;
+                document.getElementById('detailStart').textContent   = pData.start;
+                document.getElementById('detailEnd').textContent     = pData.end;
+                document.getElementById('progressLabel').textContent = pData.progress + '% Complete';
+                setTimeout(() => {
+                    document.getElementById('progressBar').style.width = pData.progress + '%';
+                }, 200);
+
+                // Milestones — mark done based on progress
+                const threshold = pData.progress;
+                const steps = [0, 15, 30, 50, 70, 85, 100];
+                const milestonesEl = document.getElementById('milestones');
+                milestonesEl.innerHTML = '';
+                milestonesData.forEach((m, i) => {
+                    const isDone = threshold >= steps[i];
+                    const isActive = !isDone && threshold >= (steps[i - 1] || 0);
+                    milestonesEl.innerHTML += `<div class="milestone ${isDone ? 'done' : 'pending'}">
+                        <div class="milestone-icon">${isDone ? '✅' : (isActive ? m.icon : '⏳')}</div>
+                        <div class="milestone-text">
+                            <h5>${m.label}</h5>
+                            <p>${m.date} · ${isDone ? 'Completed' : (isActive ? 'In Progress' : 'Upcoming')}</p>
+                        </div>
+                    </div>`;
+                });
+
+                // Appointments table
+                const apptTbody = document.getElementById('apptTable');
+                if (appointments.length === 0) {
+                     apptTbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No appointments found.</td></tr>';
+                } else {
+                     // Only display the most recent appointment (the last one returned or created)
+                     const latestAppt = appointments[appointments.length - 1];
+                     const statusClass = latestAppt.status === 'confirmed' ? 'status-confirmed' : 
+                                         (latestAppt.status === 'cancelled' || latestAppt.status === 'rejected') ? 'status-cancelled' : 'status-pending';
+                     
+                     apptTbody.innerHTML = `<tr>
+                        <td>1</td>
+                        <td><strong>${latestAppt.arch}</strong></td>
+                        <td>${latestAppt.type}</td>
+                        <td>${latestAppt.date}</td>
+                        <td>${latestAppt.time}</td>
+                        <td><span class="status ${statusClass}">${latestAppt.status.charAt(0).toUpperCase() + latestAppt.status.slice(1)}</span></td>
+                     </tr>`;
+                }
+
+
+            } catch (err) {
+                console.error("Dashboard DB error", err);
+            }
+        });
+    </script>
+
+</body>
+</html>

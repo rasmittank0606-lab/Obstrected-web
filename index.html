@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OBSTRECTED | Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            background:
+                linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)),
+                url('style/image/1.jpg') center/cover no-repeat fixed;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 20px;
+        }
+
+        /* ---- Brand ---- */
+        .brand {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            animation: fadeDown 0.6s ease;
+        }
+
+        .brand h1 {
+            font-size: 38px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .brand p {
+            font-size: 15px;
+            color: #ccc;
+            margin-top: 6px;
+        }
+
+        @keyframes fadeDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ---- Card ---- */
+        .login-card {
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 20px;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 460px;
+            overflow: hidden;
+            animation: fadeUp 0.6s ease;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ---- Tabs ---- */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #eee;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 18px;
+            text-align: center;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            color: #999;
+            background: #f8f8f8;
+            transition: all 0.3s;
+            border: none;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .tab.active-arch {
+            color: #1a1a2e;
+            background: white;
+            border-bottom: 3px solid #28a745;
+        }
+
+        .tab.active-cust {
+            color: #0d2137;
+            background: white;
+            border-bottom: 3px solid #17a2b8;
+        }
+
+        .tab.active-admin {
+            color: white;
+            background: linear-gradient(135deg, #2b5876, #4e4376);
+            border-bottom: none;
+            border-radius: 10px;
+        }
+
+        /* ---- Form ---- */
+        .panel {
+            display: none;
+            padding: 32px 38px 36px;
+        }
+
+        .panel.active {
+            display: block;
+        }
+
+        .panel-icon {
+            text-align: center;
+            font-size: 40px;
+            margin-bottom: 8px;
+        }
+
+        .panel h2 {
+            text-align: center;
+            font-size: 22px;
+            margin-bottom: 4px;
+            color: #1a1a2e;
+        }
+
+        .panel .subtitle {
+            text-align: center;
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 6px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid #e8e8e8;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            outline: none;
+            transition: all 0.3s;
+            background: #fafafa;
+        }
+
+        .form-group input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+            background: white;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+            color: white;
+            background: var(--btn-bg);
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .login-btn:hover {
+            background: var(--btn-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px var(--btn-shadow);
+        }
+
+        /* Architect theme */
+        #archPanel {
+            --accent: #28a745;
+            --accent-glow: rgba(40, 167, 69, 0.15);
+            --btn-bg: linear-gradient(135deg, #28a745, #1e7e34);
+            --btn-hover: linear-gradient(135deg, #218838, #155724);
+            --btn-shadow: rgba(40, 167, 69, 0.4);
+        }
+
+        /* Customer theme */
+        #custPanel {
+            --accent: #17a2b8;
+            --accent-glow: rgba(23, 162, 184, 0.15);
+            --btn-bg: linear-gradient(135deg, #17a2b8, #0d5c63);
+            --btn-hover: linear-gradient(135deg, #138496, #0a4a4f);
+            --btn-shadow: rgba(23, 162, 184, 0.4);
+        }
+
+        /* Admin theme */
+        #adminPanel {
+            --accent: #4e4376;
+            --accent-glow: rgba(78, 67, 118, 0.15);
+            --btn-bg: linear-gradient(135deg, #2b5876, #4e4376);
+            --btn-hover: linear-gradient(135deg, #234760, #3d345c);
+            --btn-shadow: rgba(43, 88, 118, 0.4);
+        }
+
+        .error-msg {
+            color: #dc3545;
+            font-size: 12px;
+            text-align: center;
+            margin-top: 10px;
+            padding: 8px;
+            background: rgba(220, 53, 69, 0.08);
+            border-radius: 8px;
+            display: none;
+        }
+
+        /* ---- Hint grid ---- */
+        .hint-box {
+            margin-top: 18px;
+            background: #f8f8f8;
+            border-radius: 10px;
+            padding: 12px 14px;
+        }
+
+        .hint-box h5 {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+            margin-bottom: 8px;
+        }
+
+        .hint-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+        }
+
+        .hint-item {
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 7px;
+            padding: 6px 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .hint-item:hover {
+            border-color: var(--accent);
+            background: #f0fff8;
+        }
+
+        .hint-item .h-name {
+            font-size: 11px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        .hint-item .h-user {
+            font-size: 10px;
+            color: #999;
+        }
+
+        /* ---- Footer ---- */
+        .login-footer {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 12px;
+            margin-top: 22px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="brand">
+        <h1>OBSTRECTED</h1>
+        <p>Professional Architecture & House Design Studio</p>
+    </div>
+
+    <div class="login-card">
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active-arch" id="tabArch" onclick="switchTab('arch')">🏛️ Architect Login</button>
+            <button class="tab" id="tabCust" onclick="switchTab('cust')">🏠 Customer Login</button>
+        </div>
+
+        <!-- Architect Panel -->
+        <div class="panel active" id="archPanel">
+            <div class="panel-icon">🏛️</div>
+            <h2>Architect Portal</h2>
+            <p class="subtitle">Sign in to manage your projects & appointments</p>
+
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="arch-user" placeholder="e.g. beloo.gajjar" autocomplete="username">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="arch-pass" placeholder="Enter password" autocomplete="current-password">
+            </div>
+            <button class="login-btn" onclick="loginArch()">Sign In to Architect Panel →</button>
+            <div class="error-msg" id="arch-err">❌ Invalid credentials. Please try again.</div>
+        </div>
+
+        <!-- Customer Panel -->
+        <div class="panel" id="custPanel">
+            <div class="panel-icon">🏠</div>
+            <h2>Customer Portal</h2>
+            <p class="subtitle">Sign in to track your project & appointments</p>
+
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="cust-user" placeholder="e.g. rohan.mehta" autocomplete="username">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="cust-pass" placeholder="Enter password" autocomplete="current-password">
+            </div>
+            <button class="login-btn" onclick="loginCust()">Sign In to Customer Panel →</button>
+            <div class="error-msg" id="cust-err">❌ Invalid credentials. Please try again.</div>
+
+            <div style="text-align:center; margin-top:15px; margin-bottom:15px; font-size:14px;">
+                <span style="color:#666;">Don't have an account?</span> 
+                <a href="customer_register.html" style="color:#17a2b8; font-weight:600; text-decoration:none;">Register here</a>
+            </div>
+
+
+        </div>
+
+    </div>
+
+    <div class="login-footer">© 2026 OBSTRECTED Architecture | All Rights Reserved</div>
+
+    <script>
+        // Check if already logged in via backend session
+        fetch('/api/auth/me')
+            .then(r => { if (r.ok) return r.json(); throw new Error(); })
+            .then(({ user }) => {
+                if (user.role === 'admin') window.location.href = '/admin_dashboard.html';
+                else if (user.role === 'architect') window.location.href = '/architect_dashboard.html';
+                else                           window.location.href = '/home.html';
+            })
+            .catch(() => { /* not logged in — stay on page */ });
+
+        function switchTab(tab) {
+            document.getElementById('archPanel').classList.remove('active');
+            document.getElementById('custPanel').classList.remove('active');
+            document.getElementById('tabArch').className = 'tab';
+            document.getElementById('tabCust').className = 'tab';
+            
+            if (tab === 'arch') {
+                document.getElementById('archPanel').classList.add('active');
+                document.getElementById('tabArch').className = 'tab active-arch';
+            } else if (tab === 'cust') {
+                document.getElementById('custPanel').classList.add('active');
+                document.getElementById('tabCust').className = 'tab active-cust';
+            }
+        }
+
+        function fillCust(u, p) {
+            document.getElementById('cust-user').value = u;
+            document.getElementById('cust-pass').value = p;
+        }
+
+        async function loginArch() {
+            const u   = document.getElementById('arch-user').value.trim();
+            const p   = document.getElementById('arch-pass').value.trim();
+            const err = document.getElementById('arch-err');
+            const btn = document.querySelector('#archPanel .login-btn');
+            btn.textContent = 'Signing in…';
+            btn.disabled = true;
+            try {
+                const res  = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: u, password: p, role: 'architect' })
+                });
+                if (res.ok) {
+                    window.location.href = '/architect_dashboard.html';
+                } else {
+                    err.style.display = 'block';
+                    document.getElementById('arch-pass').value = '';
+                }
+            } catch {
+                err.style.display = 'block';
+                err.textContent = '❌ Server error. Is the server running?';
+            }
+            btn.textContent = 'Sign In to Architect Panel →';
+            btn.disabled = false;
+        }
+
+        async function loginCust() {
+            const u   = document.getElementById('cust-user').value.trim();
+            const p   = document.getElementById('cust-pass').value.trim();
+            const err = document.getElementById('cust-err');
+            const btn = document.querySelector('#custPanel .login-btn');
+            btn.textContent = 'Signing in…';
+            btn.disabled = true;
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: u, password: p, role: 'customer' })
+                });
+                if (res.ok) {
+                    window.location.href = '/home.html';
+                } else {
+                    err.style.display = 'block';
+                    document.getElementById('cust-pass').value = '';
+                }
+            } catch {
+                err.style.display = 'block';
+                err.textContent = '❌ Server error. Is the server running?';
+            }
+            btn.textContent = 'Sign In to Customer Panel →';
+            btn.disabled = false;
+        }
+
+        // Enter key support
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                if (document.getElementById('archPanel').classList.contains('active')) loginArch();
+                else loginCust();
+            }
+        });
+    </script>
+
+</body>
+
+</html>

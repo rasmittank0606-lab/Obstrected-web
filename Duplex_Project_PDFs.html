@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OBSTRECTED | Project PDFs</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style/style.css">
+    <script src="guard.js"></script>
+</head>
+<body>
+
+<header>
+            <div class="logo">OBSTRECTED</div>
+            <nav>
+            <ul>
+                <li><a href="home.html">Home</a></li>
+                <li><a href="portfolio.html">portfolios</a></li>
+                <li><a href="our_project.html">Projects</a></li>
+                <li><a href="book_appointment.html">Book Appointment</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="architect_login.html">Architect Panel</a></li>
+                <li><a href="customer_login.html">Customer Panel</a></li>
+            </ul>
+        </nav>
+</header>
+<h2>Duplex Project PDFs</h2>
+<div class="container">
+    <h2>Download & View Project Files</h2>
+
+    <div class="pdf-list" id="pdfList">
+        <!-- JS will populate this -->
+    </div>
+</div>
+
+<script>
+    const projectPDFs = [
+        { title: "Unique height", file: "pdf/ALL FLOOR PLANS_R3_(16TH MARCH' 2025).pdf" },
+        { title: "zen Garden", file: "pdf/LANDSCAPE PLAN.pdf" },
+        { title: "Unique vision", file: "pdf/OPTION_01.pdf" }
+    ];
+
+    const pdfListContainer = document.getElementById('pdfList');
+
+    projectPDFs.forEach(project => {
+        const item = document.createElement('div');
+        item.className = 'pdf-item';
+
+        item.innerHTML = `
+            <div class="pdf-title">${project.title}</div>
+            <div class="btn-group">
+                <a href="${project.file}" target="_blank" class="view-btn">View</a>
+                <a href="${project.file}" download class="download-btn">Download</a>
+            </div>
+        `;
+
+        pdfListContainer.appendChild(item);
+    });
+</script>
+
+</body>
+</html>

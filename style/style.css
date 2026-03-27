@@ -1,0 +1,543 @@
+/* Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+/* Reset */
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+/* General */
+body{
+font-family:'Poppins',sans-serif;
+background:#f8f9fa;
+color:#343a40;
+line-height:1.6;
+overflow-x:hidden;
+padding-top:90px;
+}
+
+html{
+scroll-behavior:smooth;
+}
+
+/* ================= NAVBAR ================= */
+
+header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+padding:20px 50px;
+
+background:rgba(34,34,34,0.9);
+backdrop-filter:blur(10px);
+
+position:fixed;
+top:0;
+left:0;
+
+width:100%;
+
+z-index:1000;
+
+box-shadow:0 4px 15px rgba(0,0,0,0.15);
+}
+
+.logo{
+font-size:28px;
+font-weight:bold;
+letter-spacing:1px;
+text-transform:uppercase;
+color:white;
+transition:transform .3s;
+}
+
+.logo:hover{
+transform:scale(1.1);
+}
+
+/* Navbar Links */
+
+nav ul{
+list-style:none;
+display:flex;
+gap:25px;
+}
+
+nav ul li a{
+color:white;
+text-decoration:none;
+font-weight:500;
+position:relative;
+transition:.3s;
+}
+
+nav ul li a::after{
+content:'';
+width:0;
+height:2px;
+background:#28a745;
+position:absolute;
+left:50%;
+bottom:-5px;
+transform:translateX(-50%);
+transition:.3s;
+}
+
+nav ul li a:hover{
+color:#28a745;
+}
+
+nav ul li a:hover::after{
+width:100%;
+}
+
+/* ================= HERO ================= */
+
+.hero{
+height:90vh;
+
+background:
+linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6)),
+url('image/1.jpg') center/cover no-repeat;
+
+display:flex;
+justify-content:center;
+align-items:center;
+text-align:center;
+color:white;
+}
+
+.hero-content{
+background:rgba(0,0,0,0.6);
+padding:30px 50px;
+border-radius:12px;
+box-shadow:0 5px 15px rgba(255,255,255,0.2);
+}
+
+.hero h1{
+font-size:50px;
+margin-bottom:15px;
+}
+
+.hero p{
+font-size:20px;
+margin-bottom:25px;
+color:#ccc;
+}
+
+/* ================= BUTTON ================= */
+
+.btn{
+background:linear-gradient(45deg,#28a745,#218838);
+color:white;
+padding:12px 30px;
+text-decoration:none;
+font-size:18px;
+font-weight:bold;
+border-radius:10px;
+display:inline-block;
+transition:.3s;
+box-shadow:3px 3px 10px rgba(0,0,0,0.3);
+}
+
+.btn:hover{
+background:linear-gradient(45deg,#218838,#1e7e34);
+transform:scale(1.05);
+}
+
+/* ================= ABOUT ================= */
+
+.about{
+padding:60px;
+text-align:center;
+background:white;
+max-width:900px;
+margin:auto;
+border-radius:12px;
+box-shadow:0 8px 20px rgba(0,0,0,0.1);
+transition:.3s;
+}
+
+.about:hover{
+transform:scale(1.02);
+}
+
+.about h2{
+font-size:36px;
+margin-bottom:20px;
+}
+
+.about p{
+font-size:18px;
+color:#555;
+}
+
+/* ================= CONTACT ================= */
+
+.contact{
+padding:60px;
+text-align:center;
+background:linear-gradient(135deg,#f1f1f1,#e0e0e0);
+border-radius:12px;
+margin:50px auto;
+max-width:900px;
+box-shadow:0 8px 20px rgba(0,0,0,0.1);
+}
+
+/* ================= PROJECTS ================= */
+
+.projects{
+background:#f9f9f9;
+padding:50px 20px;
+text-align:center;
+}
+
+.project-gallery{
+display:flex;
+flex-wrap:wrap;
+gap:30px;
+justify-content:center;
+margin-top:40px;
+}
+
+.project-card{
+background:white;
+border-radius:12px;
+box-shadow:0 6px 15px rgba(0,0,0,0.1);
+overflow:hidden;
+width:300px;
+text-align:left;
+transition:.3s;
+}
+
+.project-card:hover{
+transform:translateY(-5px);
+}
+
+.project-card img{
+width:100%;
+height:200px;
+object-fit:cover;
+}
+
+.project-card h3{
+font-size:20px;
+margin:15px;
+color:#28a745;
+}
+
+.project-card p{
+font-size:16px;
+color:#555;
+margin:0 15px 15px;
+}
+
+/* ================= FORM ================= */
+
+.container{
+max-width:700px;
+margin:auto;
+background:white;
+padding:30px;
+border-radius:10px;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+h2{
+text-align:center;
+margin-bottom:20px;
+}
+
+form label{
+display:block;
+margin-top:15px;
+font-weight:500;
+}
+
+form input,
+form select{
+width:100%;
+padding:10px;
+margin-top:5px;
+border:1px solid #ccc;
+border-radius:5px;
+}
+
+button{
+margin-top:20px;
+width:100%;
+padding:12px;
+background:#28a745;
+color:white;
+border:none;
+border-radius:5px;
+font-size:16px;
+cursor:pointer;
+transition:.3s;
+}
+
+button:hover{
+background:#218838;
+}
+
+/* ================= PDF LIST ================= */
+
+.pdf-list{
+display:flex;
+flex-direction:column;
+gap:20px;
+}
+
+.pdf-item{
+background:white;
+padding:20px;
+border-radius:12px;
+box-shadow:0 4px 10px rgba(0,0,0,0.05);
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.pdf-title{
+font-weight:bold;
+}
+
+.btn-group a{
+margin-left:10px;
+text-decoration:none;
+padding:8px 14px;
+border-radius:6px;
+color:white;
+font-weight:500;
+transition:.3s;
+}
+
+.view-btn{
+background:#28a745;
+}
+
+.view-btn:hover{
+background:#218838;
+}
+
+.download-btn{
+background:#007bff;
+}
+
+.download-btn:hover{
+background:#0056b3;
+}
+
+/* ================= FOOTER ================= */
+
+footer{
+text-align:center;
+padding:15px;
+background:#222;
+color:white;
+font-size:16px;
+}
+
+/* ================= CHART ================= */
+
+#projectPieChart{
+max-width:600px;
+max-height:600px;
+margin:0 auto;
+display:block;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width:1024px){
+
+.hero h1{
+font-size:40px;
+}
+
+.hero p{
+font-size:18px;
+}
+
+.about,
+.contact{
+width:90%;
+padding:40px;
+}
+
+}
+
+@media (max-width:768px){
+
+header{
+padding:15px 25px;
+}
+
+nav ul{
+gap:15px;
+}
+
+.hero h1{
+font-size:34px;
+}
+
+.hero p{
+font-size:16px;
+}
+
+.about,
+.contact{
+width:95%;
+padding:30px;
+}
+
+}
+
+@media (max-width:480px){
+
+.hero h1{
+font-size:28px;
+}
+
+.hero p{
+font-size:14px;
+}
+
+.btn{
+font-size:16px;
+padding:8px 18px;
+}
+
+.about,
+.contact{
+width:100%;
+padding:25px;
+}
+
+}
+
+/* ================= BOOK APPOINTMENT PAGE ================= */
+
+.appointment-page{
+
+background:
+linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6)),
+url('image/1.jpg');
+
+background-size:cover;
+background-position:center;
+background-repeat:no-repeat;
+background-attachment:fixed;
+
+}
+
+/* Form design on background */
+
+.appointment-page .container{
+
+max-width:700px;
+margin:auto;
+
+background:rgba(255,255,255,0.95);
+
+padding:30px;
+
+border-radius:10px;
+
+box-shadow:0 8px 20px rgba(0,0,0,0.3);
+
+}
+
+
+.logo img{
+height:40px;
+width:auto;
+}
+
+
+/* ================= contact page ================= */
+
+
+.contact-section{
+max-width:1100px;
+margin:120px auto;
+padding:40px;
+background:white;
+border-radius:10px;
+box-shadow:0 8px 20px rgba(0,0,0,0.15);
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:40px;
+}
+
+
+
+/* Contact Form */
+
+.contact-form h2{
+margin-bottom:20px;
+}
+
+.contact-form label{
+display:block;
+margin-top:10px;
+font-weight:500;
+}
+
+.contact-form input,
+.contact-form textarea{
+
+width:100%;
+padding:10px;
+margin-top:5px;
+
+border:1px solid #ccc;
+border-radius:5px;
+
+}
+
+.contact-form button{
+
+margin-top:15px;
+padding:12px;
+
+background:#28a745;
+color:white;
+
+border:none;
+border-radius:5px;
+
+cursor:pointer;
+font-size:16px;
+
+}
+
+.contact-form button:hover{
+background:#218838;
+}
+
+/* Map */
+
+.map{
+margin-top:40px;
+}
+
+.map iframe{
+width:100%;
+height:300px;
+border:none;
+border-radius:10px;
+}
+
+/* Responsive */
+
+@media(max-width:768px){
+
+.contact-section{
+grid-template-columns:1fr;
+}
+
+}

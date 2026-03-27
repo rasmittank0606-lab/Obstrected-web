@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OBSTRECTED | Master Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --sidebar-w: 72px;
+            --sidebar-bg: #0f172a;
+            --sidebar-active: #1e40af;
+            --sidebar-hover: rgba(255,255,255,0.07);
+            --main-bg: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-primary: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --blue: #1e40af;
+            --blue-light: #eff6ff;
+            --green: #16a34a;
+            --green-light: #f0fdf4;
+            --orange: #d97706;
+            --orange-light: #fffbeb;
+            --red: #dc2626;
+            --red-light: #fef2f2;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -1px rgba(0,0,0,0.04);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.07), 0 4px 6px -2px rgba(0,0,0,0.04);
+            --radius: 12px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--main-bg);
+            color: var(--text-primary);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ─── SIDEBAR ─────────────────────────── */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--sidebar-bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            gap: 6px;
+            flex-shrink: 0;
+            z-index: 50;
+        }
+
+        .sidebar-logo {
+            width: 40px;
+            height: 40px;
+            background: var(--blue);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 24px;
+        }
+
+        .nav-item {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+            position: relative;
+            font-size: 20px;
+            border: none;
+            background: none;
+            gap: 2px;
+        }
+
+        .nav-item span.label {
+            font-size: 8px;
+            color: rgba(255,255,255,0.45);
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+
+        .nav-item:hover { background: var(--sidebar-hover); }
+        .nav-item:hover span.label { color: rgba(255,255,255,0.7); }
+
+        .nav-item.active {
+            background: var(--sidebar-active);
+        }
+        .nav-item.active span.label { color: rgba(255,255,255,0.9); }
+
+        .sidebar-bottom { margin-top: auto; }
+
+        .logout-nav {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            color: #ef4444;
+            background: rgba(239,68,68,0.1);
+            border: none;
+            transition: background 0.2s;
+        }
+        .logout-nav:hover { background: rgba(239,68,68,0.2); }
+
+        /* ─── MAIN LAYOUT ─────────────────────── */
+        .main-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        /* Top bar */
+        .topbar {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .topbar-title h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .topbar-title p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .admin-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--main-bg);
+            padding: 8px 14px;
+            border-radius: 20px;
+        }
+
+        .admin-avatar {
+            width: 32px;
+            height: 32px;
+            background: var(--blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .admin-name { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+        .admin-role { font-size: 11px; color: var(--text-muted); }
+
+        /* ─── CONTENT AREA ─────────────────────── */
+        .content-wrap {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            min-width: 0;
+        }
+
+        /* ─── VIEWS ─────────────────────────────── */
+        .view { display: none; flex-direction: column; gap: 20px; }
+        .view.active { display: flex; }
+
+        /* ─── STAT CARDS ────────────────────────── */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width: 1100px) { .stat-grid { grid-template-columns: repeat(2, 1fr); } }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+
+        .stat-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+
+        .stat-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .stat-icon.blue { background: var(--blue-light); }
+        .stat-icon.green { background: var(--green-light); }
+        .stat-icon.orange { background: var(--orange-light); }
+        .stat-icon.red { background: var(--red-light); }
+
+        .stat-label { font-size: 12px; color: var(--text-muted); font-weight: 500; margin-bottom: 4px; }
+        .stat-num { font-size: 28px; font-weight: 700; color: var(--text-primary); line-height: 1; }
+
+        /* ─── TABLE PANEL ────────────────────────── */
+        .table-panel {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title { font-size: 15px; font-weight: 700; flex: 1; }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--main-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 7px 12px;
+            font-size: 13px;
+            color: var(--text-muted);
+            width: 220px;
+        }
+
+        .search-bar input {
+            background: none;
+            border: none;
+            outline: none;
+            font-family: inherit;
+            font-size: 13px;
+            color: var(--text-primary);
+            width: 100%;
+        }
+
+        .filter-select {
+            background: var(--main-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 7px 10px;
+            font-size: 13px;
+            font-family: inherit;
+            color: var(--text-primary);
+            cursor: pointer;
+            outline: none;
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+
+        thead th {
+            padding: 10px 20px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: var(--text-muted);
+            background: #f8fafc;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s;
+            cursor: pointer;
+        }
+
+        tbody tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: #f8fafc; }
+        tbody tr.selected { background: var(--blue-light); }
+
+        tbody td { padding: 12px 20px; font-size: 13px; }
+
+        .user-cell { display: flex; align-items: center; gap: 10px; }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--blue), #6366f1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .user-name { font-weight: 600; font-size: 13px; }
+        .user-sub { font-size: 11px; color: var(--text-muted); }
+
+        /* ─── BADGES ─────────────────────────────── */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+            text-transform: uppercase;
+        }
+
+        .badge::before { content: '●'; font-size: 8px; }
+        .badge.approved, .badge.active { background: var(--green-light); color: var(--green); }
+        .badge.pending { background: var(--orange-light); color: var(--orange); }
+        .badge.suspended, .badge.rejected { background: var(--red-light); color: var(--red); }
+        .badge.confirmed { background: var(--blue-light); color: var(--blue); }
+
+        /* ─── ACTION BUTTONS ────────────────────── */
+        .actions { display: flex; align-items: center; gap: 6px; }
+
+        .icon-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.15s;
+        }
+
+        .icon-btn:hover { box-shadow: var(--shadow-sm); transform: translateY(-1px); }
+        .icon-btn.view:hover { border-color: var(--blue); background: var(--blue-light); }
+        .icon-btn.block:hover { border-color: var(--red); background: var(--red-light); }
+        .icon-btn.approve:hover { border-color: var(--green); background: var(--green-light); }
+
+        /* ─── DETAIL PANEL ─────────────────────── */
+        .detail-panel {
+            width: 0;
+            background: var(--card-bg);
+            border-left: 1px solid var(--border);
+            overflow: hidden;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-panel.open { width: 320px; }
+
+        .detail-inner {
+            width: 320px;
+            padding: 24px 20px;
+            overflow-y: auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .detail-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .detail-title { font-size: 14px; font-weight: 700; }
+
+        .close-detail {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: none;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+        }
+
+        .close-detail:hover { background: var(--main-bg); }
+
+        .profile-section { text-align: center; padding: 10px 0; }
+
+        .profile-avatar-lg {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1e40af, #6366f1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 26px;
+            margin: 0 auto 12px;
+            box-shadow: 0 0 0 4px var(--blue-light);
+        }
+
+        .profile-name { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+        .profile-sub { font-size: 12px; color: var(--text-muted); }
+
+        .info-grid { display: flex; flex-direction: column; gap: 12px; }
+
+        .info-row {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .info-icon {
+            font-size: 16px;
+            margin-top: 1px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .info-label { font-size: 11px; color: var(--text-muted); font-weight: 600; margin-bottom: 1px; }
+        .info-value { font-size: 13px; font-weight: 500; }
+
+        .divider { border: none; border-top: 1px solid var(--border); }
+
+        .detail-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-muted);
+        }
+
+        /* Management Toggle */
+        .toggle-row {
+            background: var(--main-bg);
+            border-radius: 10px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .toggle-label { font-size: 13px; font-weight: 600; }
+        .toggle-sub { font-size: 11px; color: var(--text-muted); }
+
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #cbd5e1;
+            border-radius: 24px;
+            transition: background 0.3s;
+        }
+
+        .toggle-slider::before {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .toggle-switch input:checked + .toggle-slider { background: var(--green); }
+        .toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+        /* Activity list */
+        .activity-list { display: flex; flex-direction: column; gap: 8px; }
+
+        .activity-item {
+            background: var(--main-bg);
+            border-radius: 8px;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .activity-date { font-size: 12px; font-weight: 600; }
+        .activity-arch { font-size: 11px; color: var(--text-muted); }
+
+        .action-full-btn {
+            width: 100%;
+            padding: 11px;
+            border-radius: 10px;
+            border: none;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-danger { background: var(--red-light); color: var(--red); }
+        .btn-danger:hover { background: var(--red); color: white; }
+        .btn-success { background: var(--green-light); color: var(--green); }
+        .btn-success:hover { background: var(--green); color: white; }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 48px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state .icon { font-size: 40px; margin-bottom: 12px; }
+        .empty-state p { font-size: 13px; }
+
+        /* Loading */
+        .loading { opacity: 0.5; pointer-events: none; }
+
+        /* Animations */
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .view.active { animation: fadeSlideIn 0.25s ease; }
+    </style>
+</head>
+<body>
+
+    <!-- ─── SIDEBAR ─────────────────────────────────── -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">🏢</div>
+
+        <button class="nav-item active" onclick="switchView('overview')" id="nav-overview" title="Dashboard">
+            <span>📊</span>
+            <span class="label">Dash</span>
+        </button>
+        <button class="nav-item" onclick="switchView('architects')" id="nav-architects" title="Architects">
+            <span>📐</span>
+            <span class="label">Archs</span>
+        </button>
+        <button class="nav-item" onclick="switchView('customers')" id="nav-customers" title="Customers">
+            <span>👥</span>
+            <span class="label">Custs</span>
+        </button>
+        <button class="nav-item" onclick="switchView('appointments')" id="nav-appointments" title="Appointments">
+            <span>📅</span>
+            <span class="label">Appts</span>
+        </button>
+
+        <div class="sidebar-bottom">
+            <button class="logout-nav" onclick="logout()" title="Sign Out">🚪</button>
+        </div>
+    </aside>
+
+    <!-- ─── MAIN WRAPPER ─────────────────────────────── -->
+    <div class="main-wrapper">
+
+        <!-- Top Bar -->
+        <header class="topbar">
+            <div class="topbar-title">
+                <h1 id="topbar-heading">Dashboard Overview</h1>
+                <p id="topbar-sub">OBSTRECTED Architecture System</p>
+            </div>
+            <div class="topbar-right">
+                <div class="admin-badge">
+                    <div class="admin-avatar">A</div>
+                    <div>
+                        <div class="admin-name">Master Admin</div>
+                        <div class="admin-role">System Administrator</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="content-wrap">
+
+            <!-- ─── MAIN CONTENT ─────────────────────── -->
+            <main class="main-content">
+
+                <!-- OVERVIEW -->
+                <div class="view active" id="view-overview">
+                    <div class="stat-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon blue">📐</div>
+                            <div>
+                                <div class="stat-label">Total Architects</div>
+                                <div class="stat-num" id="s-architects">--</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon green">👥</div>
+                            <div>
+                                <div class="stat-label">Total Customers</div>
+                                <div class="stat-num" id="s-customers">--</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon orange">⏳</div>
+                            <div>
+                                <div class="stat-label">Pending Approvals</div>
+                                <div class="stat-num" id="s-pending">--</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon red">📅</div>
+                            <div>
+                                <div class="stat-label">Today's Appointments</div>
+                                <div class="stat-num" id="s-today">--</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-panel">
+                        <div class="table-header">
+                            <span class="section-title">Recent Appointments</span>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Customer</th>
+                                    <th>Architect</th>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-appts-body">
+                                <tr><td colspan="5" class="empty-state"><p>Loading...</p></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ARCHITECTS VIEW -->
+                <div class="view" id="view-architects">
+                    <div class="table-panel">
+                        <div class="table-header">
+                            <span class="section-title">Architect Accounts</span>
+                            <div class="search-bar">
+                                <span>🔍</span>
+                                <input type="text" placeholder="Search architects..." id="arch-search" oninput="filterTable('arch')">
+                            </div>
+                            <select class="filter-select" id="arch-filter" onchange="filterTable('arch')">
+                                <option value="">All Status</option>
+                                <option value="approved">Approved</option>
+                                <option value="suspended">Suspended</option>
+                            </select>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Speciality</th>
+                                    <th>Handled</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="architects-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- CUSTOMERS VIEW -->
+                <div class="view" id="view-customers">
+                    <div class="table-panel">
+                        <div class="table-header">
+                            <span class="section-title">Customer Accounts</span>
+                            <div class="search-bar">
+                                <span>🔍</span>
+                                <input type="text" placeholder="Search customers..." id="cust-search" oninput="filterTable('cust')">
+                            </div>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Bookings</th>
+                                    <th>Cooldown Policy</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customers-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- APPOINTMENTS VIEW -->
+                <div class="view" id="view-appointments">
+                    <div class="table-panel">
+                        <div class="table-header">
+                            <span class="section-title">Global Appointment Log</span>
+                            <div class="search-bar">
+                                <span>🔍</span>
+                                <input type="text" placeholder="Search appointments..." id="appt-search" oninput="filterTable('appt')">
+                            </div>
+                            <select class="filter-select" id="appt-filter" onchange="filterTable('appt')">
+                                <option value="">All Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="confirmed">Confirmed</option>
+                                <option value="rejected">Rejected</option>
+                            </select>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Customer</th>
+                                    <th>Architect</th>
+                                    <th>Date / Time</th>
+                                    <th>OTC Code</th>
+                                    <th>Status</th>
+                                    <th>Override</th>
+                                </tr>
+                            </thead>
+                            <tbody id="appointments-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </main>
+
+            <!-- ─── DETAIL PANEL ───────────────────── -->
+            <aside class="detail-panel" id="detail-panel">
+                <div class="detail-inner" id="detail-inner">
+                    <!-- Populated by JS -->
+                </div>
+            </aside>
+
+        </div>
+    </div>
+
+    <script>
+        let archData = [], custData = [], apptData = [];
+        let selectedRow = null;
+
+        async function checkAuth() {
+            try {
+                const res = await fetch('/api/auth/admin-me');
+                if (!res.ok) throw new Error();
+                const { user } = await res.json();
+                if (user.role !== 'admin') throw new Error();
+                loadStats();
+                loadRecentAppts();
+            } catch {
+                window.location.href = '/admin_login.html';
+            }
+        }
+        checkAuth();
+
+        async function logout() {
+            await fetch('/api/auth/admin-logout', { method: 'POST' });
+            window.location.href = '/admin_login.html';
+        }
+
+        // ── View Switching ──────────────────────────────────
+        const titles = {
+            overview: ['Dashboard Overview', 'System at a glance'],
+            architects: ['Manage Architects', 'View, approve, and suspend architect accounts'],
+            customers: ['Manage Customers', 'Review customers and manage booking policies'],
+            appointments: ['Global Appointment Log', 'Full audit trail of all system appointments']
+        };
+
+        function switchView(view) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            document.getElementById('view-' + view).classList.add('active');
+            document.getElementById('nav-' + view).classList.add('active');
+            document.getElementById('topbar-heading').textContent = titles[view][0];
+            document.getElementById('topbar-sub').textContent = titles[view][1];
+
+            closeDetail();
+
+            if (view === 'architects' && archData.length === 0) loadArchitects();
+            if (view === 'customers'  && custData.length === 0)  loadCustomers();
+            if (view === 'appointments' && apptData.length === 0) loadAppointments();
+        }
+
+        // ── Detail Panel ────────────────────────────────────
+        function openDetail(html) {
+            document.getElementById('detail-inner').innerHTML = html;
+            document.getElementById('detail-panel').classList.add('open');
+        }
+
+        function closeDetail() {
+            document.getElementById('detail-panel').classList.remove('open');
+            if (selectedRow) { selectedRow.classList.remove('selected'); selectedRow = null; }
+        }
+
+        function selectRow(tr) {
+            if (selectedRow) selectedRow.classList.remove('selected');
+            tr.classList.add('selected');
+            selectedRow = tr;
+        }
+
+        // ── Helpers ─────────────────────────────────────────
+        function initials(name) {
+            if (!name) return '?';
+            return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+        }
+
+        function badge(status) {
+            return `<span class="badge ${status}">${status}</span>`;
+        }
+
+        function iconBtn(icon, cls, title, onclick) {
+            return `<button class="icon-btn ${cls}" title="${title}" onclick="${onclick}">${icon}</button>`;
+        }
+
+        // ── Stats ────────────────────────────────────────────
+        async function loadStats() {
+            const res = await fetch('/api/admin/stats');
+            const d = await res.json();
+            document.getElementById('s-architects').textContent = d.totalArchitects;
+            document.getElementById('s-customers').textContent  = d.totalCustomers;
+            document.getElementById('s-pending').textContent    = d.pendingApprovals;
+            document.getElementById('s-today').textContent      = d.todayAppointments;
+        }
+
+        async function loadRecentAppts() {
+            const res = await fetch('/api/admin/appointments');
+            const d = await res.json();
+            const recent = (d.appointments || []).slice(0, 5);
+            const tbody = document.getElementById('recent-appts-body');
+            if (!recent.length) {
+                tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="icon">📋</div><p>No appointments yet</p></div></td></tr>`;
+                return;
+            }
+            tbody.innerHTML = recent.map(a => `
+                <tr>
+                    <td>${a.client}</td>
+                    <td style="color:var(--text-muted); font-size:12px;">${a.arch}</td>
+                    <td style="font-size:12px;">${a.date}</td>
+                    <td style="font-size:12px;">${a.type || '-'}</td>
+                    <td>${badge(a.status)}</td>
+                </tr>
+            `).join('');
+        }
+
+        // ── Architects ───────────────────────────────────────
+        async function loadArchitects() {
+            const res = await fetch('/api/admin/architects');
+            const d = await res.json();
+            archData = d.architects || [];
+            renderArchitects(archData);
+        }
+
+        function renderArchitects(data) {
+            const tbody = document.getElementById('architects-body');
+            if (!data.length) {
+                tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="icon">📐</div><p>No architects found</p></div></td></tr>`;
+                return;
+            }
+            tbody.innerHTML = data.map(a => `
+                <tr onclick="openArchDetail(this, ${JSON.stringify(a).replace(/"/g, '&quot;')})">
+                    <td>
+                        <div class="user-cell">
+                            <div class="user-avatar">${initials(a.name)}</div>
+                            <div>
+                                <div class="user-name">${a.name}</div>
+                                <div class="user-sub">${a.username}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="color:var(--text-muted); font-size:12px;">${a.speciality || '-'}</td>
+                    <td style="font-weight:600;">${a.handled_appointments ? a.handled_appointments.length : 0}</td>
+                    <td>${badge(a.status)}</td>
+                    <td onclick="event.stopPropagation()">
+                        <div class="actions">
+                            ${iconBtn('👁️', 'view', 'View Details', `openArchDetailBtn(event, ${JSON.stringify(a).replace(/"/g, '&quot;')})`)}
+                            ${a.status === 'approved'
+                                ? iconBtn('🚫', 'block', 'Suspend Account', `quickStatusUpdate('arch', ${a.id}, 'suspended')`)
+                                : iconBtn('✅', 'approve', 'Approve Account', `quickStatusUpdate('arch', ${a.id}, 'approved')`)
+                            }
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openArchDetailBtn(e, arch) {
+            e.stopPropagation();
+            openArchDetail(e.target.closest('tr'), arch);
+        }
+
+        function openArchDetail(tr, arch) {
+            selectRow(tr);
+            const appts = arch.handled_appointments || [];
+            openDetail(`
+                <div class="detail-header">
+                    <span class="detail-title">Architect Profile</span>
+                    <button class="close-detail" onclick="closeDetail()">✕</button>
+                </div>
+
+                <div class="profile-section">
+                    <div class="profile-avatar-lg">${initials(arch.name)}</div>
+                    <div class="profile-name">${arch.name}</div>
+                    <div class="profile-sub">${arch.speciality || 'Architect'}</div>
+                    <div style="margin-top:8px;">${badge(arch.status)}</div>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-row">
+                        <span class="info-icon">👤</span>
+                        <div><div class="info-label">Username</div><div class="info-value">${arch.username}</div></div>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-icon">📧</span>
+                        <div><div class="info-label">Email</div><div class="info-value">${arch.email || 'Not set'}</div></div>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-icon">📋</span>
+                        <div><div class="info-label">Appointments Handled</div><div class="info-value">${appts.length}</div></div>
+                    </div>
+                </div>
+
+                <hr class="divider">
+
+                <div class="detail-section-title">Account Control</div>
+                <div class="toggle-row">
+                    <div>
+                        <div class="toggle-label">Account Active</div>
+                        <div class="toggle-sub">Toggle to approve or suspend</div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" ${arch.status === 'approved' ? 'checked' : ''}
+                            onchange="quickStatusUpdate('arch', ${arch.id}, this.checked ? 'approved' : 'suspended')">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+
+                <hr class="divider">
+
+                <div class="detail-section-title">Recent Activity</div>
+                <div class="activity-list">
+                    ${appts.length === 0
+                        ? `<div class="empty-state"><p>No appointments yet</p></div>`
+                        : appts.slice(0, 5).map(ap => `
+                            <div class="activity-item">
+                                <div>
+                                    <div class="activity-date">${ap.date} · ${ap.time}</div>
+                                    <div class="activity-arch">${ap.client}</div>
+                                </div>
+                                ${badge(ap.status)}
+                            </div>
+                        `).join('')
+                    }
+                </div>
+
+                ${arch.status === 'suspended'
+                    ? `<button class="action-full-btn btn-success" onclick="quickStatusUpdate('arch', ${arch.id}, 'approved')">✅ Restore Account</button>`
+                    : `<button class="action-full-btn btn-danger" onclick="quickStatusUpdate('arch', ${arch.id}, 'suspended')">🚫 Suspend Account</button>`
+                }
+
+                <hr class="divider">
+                <div class="detail-section-title" style="color: var(--red);">Danger Zone</div>
+                <button class="action-full-btn btn-danger"
+                    style="display:flex; align-items:center; justify-content:center; gap:6px;"
+                    onclick="deleteAccount('architect', ${arch.id}, '${arch.name.replace(/'/g, "\\'")}')">
+                    🗑️ Delete Architect Account
+                </button>
+            `);
+        }
+
+        // ── Customers ────────────────────────────────────────
+        async function loadCustomers() {
+            const res = await fetch('/api/admin/customers');
+            const d = await res.json();
+            custData = d.customers || [];
+            renderCustomers(custData);
+        }
+
+        function renderCustomers(data) {
+            const tbody = document.getElementById('customers-body');
+            if (!data.length) {
+                tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="icon">👥</div><p>No customers found</p></div></td></tr>`;
+                return;
+            }
+            tbody.innerHTML = data.map(c => `
+                <tr onclick="openCustDetail(this, ${JSON.stringify(c).replace(/"/g, '&quot;')})">
+                    <td>
+                        <div class="user-cell">
+                            <div class="user-avatar" style="background: linear-gradient(135deg, #059669, #0d9488);">${initials(c.name)}</div>
+                            <div>
+                                <div class="user-name">${c.name}</div>
+                                <div class="user-sub">${c.city || 'Unknown city'}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="color:var(--text-muted); font-size:12px;">${c.email || c.username}</td>
+                    <td style="font-weight:600;">${c.booking_history ? c.booking_history.length : 0}</td>
+                    <td>
+                        <span class="badge ${c.cooldown_override ? 'approved' : 'pending'}">
+                            ${c.cooldown_override ? 'Override Active' : '5-Day Rule'}
+                        </span>
+                    </td>
+                    <td onclick="event.stopPropagation()">
+                        <div class="actions">
+                            ${iconBtn('👁️', 'view', 'View Details', `openCustDetailBtn(event, ${JSON.stringify(c).replace(/"/g, '&quot;')})`)}
+                            ${iconBtn(c.cooldown_override ? '🔒' : '🔓', 'approve', 'Toggle Override', `toggleCooldownOverride(event, ${c.id}, ${c.cooldown_override})`)}
+                            ${iconBtn('🗑️', 'block', 'Delete Account', `deleteAccount('customer', ${c.id}, '${c.name.replace(/'/g, "\\'")}') `)}
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openCustDetailBtn(e, cust) {
+            e.stopPropagation();
+            openCustDetail(e.target.closest('tr'), cust);
+        }
+
+        function openCustDetail(tr, cust) {
+            selectRow(tr);
+            const history = cust.booking_history || [];
+            openDetail(`
+                <div class="detail-header">
+                    <span class="detail-title">Customer Profile</span>
+                    <button class="close-detail" onclick="closeDetail()">✕</button>
+                </div>
+
+                <div class="profile-section">
+                    <div class="profile-avatar-lg" style="background: linear-gradient(135deg, #059669, #0d9488); box-shadow: 0 0 0 4px #f0fdf4;">${initials(cust.name)}</div>
+                    <div class="profile-name">${cust.name}</div>
+                    <div class="profile-sub">${cust.city || 'No city set'}</div>
+                </div>
+
+                <div class="detail-section-title">Account Details</div>
+                <div class="info-grid">
+                    <div class="info-row">
+                        <span class="info-icon">👤</span>
+                        <div><div class="info-label">Username</div><div class="info-value">${cust.username}</div></div>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-icon">📧</span>
+                        <div><div class="info-label">Email Address</div><div class="info-value">${cust.email || 'Not set'}</div></div>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-icon">📍</span>
+                        <div><div class="info-label">City</div><div class="info-value">${cust.city || 'Not set'}</div></div>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-icon">🏠</span>
+                        <div><div class="info-label">Preferred House Type</div><div class="info-value">${cust.houseType || 'Not specified'}</div></div>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-icon">📐</span>
+                        <div><div class="info-label">Preferred Architect</div><div class="info-value">${cust.architect || 'Not assigned'}</div></div>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-icon">💰</span>
+                        <div><div class="info-label">Budget Range</div><div class="info-value">${cust.budget || 'Not specified'}</div></div>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-icon">📋</span>
+                        <div><div class="info-label">Total Bookings</div><div class="info-value">${history.length}</div></div>
+                    </div>
+                </div>
+
+                <hr class="divider">
+
+                <div class="detail-section-title">Booking Policy</div>
+                <div class="toggle-row">
+                    <div>
+                        <div class="toggle-label">5-Day Rule Override</div>
+                        <div class="toggle-sub">Allow unrestricted bookings</div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="toggle-cust-${cust.id}" ${cust.cooldown_override ? 'checked' : ''}
+                            onchange="toggleCooldownOverride(null, ${cust.id}, !this.checked)">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+
+                <hr class="divider">
+
+                <div class="detail-section-title">Booking History</div>
+                <div class="activity-list">
+                    ${history.length === 0 
+                        ? `<div class="empty-state"><p>No bookings yet</p></div>`
+                        : history.map(b => `
+                            <div class="activity-item">
+                                <div>
+                                    <div class="activity-date">${b.date}</div>
+                                    <div class="activity-arch">${b.arch}</div>
+                                </div>
+                                ${badge(b.status)}
+                            </div>
+                        `).join('')
+                    }
+                </div>
+
+                <hr class="divider">
+
+                <div class="detail-section-title" style="color: var(--red);">Danger Zone</div>
+                <button class="action-full-btn btn-danger" 
+                    style="display:flex; align-items:center; justify-content:center; gap:6px;"
+                    onclick="deleteAccount('customer', ${cust.id}, '${cust.name.replace(/'/g, "\\'")}')">
+                    🗑️ Delete Customer Account
+                </button>
+                <p style="font-size:11px; color:var(--text-muted); text-align:center; margin-top:4px;">This will also delete all their appointments.</p>
+            `);
+        }
+
+        // ── Appointments ─────────────────────────────────────
+        async function loadAppointments() {
+            const res = await fetch('/api/admin/appointments');
+            const d = await res.json();
+            apptData = d.appointments || [];
+            renderAppointments(apptData);
+        }
+
+        function renderAppointments(data) {
+            const tbody = document.getElementById('appointments-body');
+            if (!data.length) {
+                tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="icon">📅</div><p>No appointments found</p></div></td></tr>`;
+                return;
+            }
+            tbody.innerHTML = data.map(a => `
+                <tr>
+                    <td style="color:var(--text-muted); font-size:12px;">#${a.id}</td>
+                    <td>
+                        <div class="user-cell">
+                            <div class="user-avatar" style="width:26px; height:26px; font-size:10px;">${initials(a.client)}</div>
+                            <span style="font-size:13px; font-weight:500;">${a.client}</span>
+                        </div>
+                    </td>
+                    <td style="color:var(--text-muted); font-size:12px;">${a.arch}</td>
+                    <td style="font-size:12px;">${a.date}<br><span style="color:var(--text-muted);">${a.time || ''}</span></td>
+                    <td style="font-family:monospace; font-weight:700; color:var(--blue);">${a.otc || '-'}</td>
+                    <td>${badge(a.status)}</td>
+                    <td>
+                        <select onchange="overrideApptStatus(${a.id}, this.value)" 
+                                style="font-family:inherit; font-size:11px; border:1px solid var(--border); border-radius:6px; padding:4px 6px; background:var(--main-bg); cursor:pointer; outline:none;">
+                            <option value="">Change...</option>
+                            <option value="confirmed">Approve</option>
+                            <option value="rejected">Reject</option>
+                        </select>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // ── Actions ──────────────────────────────────────────
+        async function quickStatusUpdate(type, id, newStatus) {
+            try {
+                await fetch(`/api/admin/architects/${id}/status`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: newStatus })
+                });
+                archData = [];
+                closeDetail();
+                loadArchitects();
+            } catch (e) { console.error(e); }
+        }
+
+        async function toggleCooldownOverride(e, id, currentVal) {
+            if (e) e.stopPropagation();
+            try {
+                await fetch(`/api/admin/customers/${id}/override`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ override: !currentVal })
+                });
+                custData = [];
+                closeDetail();
+                loadCustomers();
+            } catch (e) { console.error(e); }
+        }
+
+        async function overrideApptStatus(id, newStatus) {
+            if (!newStatus) return;
+            if (!confirm(`Force change appointment #${id} to "${newStatus}"?`)) {
+                loadAppointments();
+                return;
+            }
+            try {
+                await fetch(`/api/admin/appointments/${id}/status`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: newStatus })
+                });
+                apptData = [];
+                loadAppointments();
+            } catch (e) { console.error(e); }
+        }
+
+        async function deleteAccount(type, id, name) {
+            const msg = type === 'customer'
+                ? `⚠️ PERMANENTLY DELETE customer "${name}"?\n\nThis will also delete ALL their appointment history.\n\nThis action cannot be undone.`
+                : `⚠️ PERMANENTLY DELETE architect "${name}"?\n\nThis action cannot be undone.`;
+            if (!confirm(msg)) return;
+            try {
+                const res = await fetch(`/api/admin/${type}s/${id}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error);
+                closeDetail();
+                if (type === 'customer') { custData = []; loadCustomers(); }
+                else { archData = []; loadArchitects(); }
+            } catch (e) {
+                alert('Error deleting account: ' + e.message);
+            }
+        }
+
+        // ── Filter / Search ──────────────────────────────────
+        function filterTable(type) {
+            if (type === 'arch') {
+                const q = document.getElementById('arch-search').value.toLowerCase();
+                const f = document.getElementById('arch-filter').value;
+                renderArchitects(archData.filter(a =>
+                    (!q || a.name.toLowerCase().includes(q) || a.username.toLowerCase().includes(q)) &&
+                    (!f || a.status === f)
+                ));
+            } else if (type === 'cust') {
+                const q = document.getElementById('cust-search').value.toLowerCase();
+                renderCustomers(custData.filter(c =>
+                    !q || c.name.toLowerCase().includes(q) || (c.email || '').toLowerCase().includes(q)
+                ));
+            } else if (type === 'appt') {
+                const q = document.getElementById('appt-search').value.toLowerCase();
+                const f = document.getElementById('appt-filter').value;
+                renderAppointments(apptData.filter(a =>
+                    (!q || a.client.toLowerCase().includes(q) || a.arch.toLowerCase().includes(q) || (a.otc || '').includes(q)) &&
+                    (!f || a.status === f)
+                ));
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architect Login | OBSTRECTED</title>
+    <link rel="stylesheet" href="style/style.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-top: 90px;
+        }
+
+        .login-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .login-card {
+            background: rgba(255,255,255,0.96);
+            border-radius: 18px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            padding: 45px 50px;
+            width: 100%;
+            max-width: 460px;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity:0; transform: translateY(30px); }
+            to   { opacity:1; transform: translateY(0); }
+        }
+
+        .login-icon {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 48px;
+        }
+
+        .login-card h2 {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 5px;
+            color: #1a1a2e;
+        }
+
+        .login-card .subtitle {
+            text-align: center;
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 7px;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: 'Poppins', sans-serif;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            outline: none;
+            background: #fafafa;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: #28a745;
+            box-shadow: 0 0 0 3px rgba(40,167,69,0.15);
+            background: white;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+            margin-top: 5px;
+            letter-spacing: 0.5px;
+        }
+
+        .login-btn:hover {
+            background: linear-gradient(135deg, #218838, #155724);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(40,167,69,0.4);
+        }
+
+        .error-msg {
+            color: #dc3545;
+            font-size: 13px;
+            text-align: center;
+            margin-top: 12px;
+            display: none;
+            padding: 10px;
+            background: rgba(220,53,69,0.1);
+            border-radius: 8px;
+        }
+
+        .badge-panel {
+            display: inline-block;
+            background: #0f3460;
+            color: white;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 18px;
+        }
+
+        .back-link a {
+            color: #28a745;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .back-link a:hover {
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <header>
+        <div class="logo">OBSTRECTED</div>
+        <nav>
+            <ul>
+                <li><a href="home.html">Home</a></li>
+                <li><a href="portfolio.html">Portfolios</a></li>
+                <li><a href="our_project.html">Projects</a></li>
+                <li><a href="book_appointment.html">Book Appointment</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="architect_login.html" style="color:#28a745;">Architect Panel</a></li>
+                <li><a href="customer_login.html">Customer Panel</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="login-wrapper">
+        <div class="login-card">
+            <div class="login-icon">🏛️</div>
+            <div style="text-align:center; margin-bottom:10px;">
+                <span class="badge-panel">ARCHITECT PANEL</span>
+            </div>
+            <h2>Architect Login</h2>
+            <p class="subtitle">Sign in to access your dashboard & appointments</p>
+
+            <div class="form-group">
+                <label for="arch-username">Username</label>
+                <input type="text" id="arch-username" placeholder="Enter your username" autocomplete="username">
+            </div>
+
+            <div class="form-group">
+                <label for="arch-password">Password</label>
+                <input type="password" id="arch-password" placeholder="Enter your password" autocomplete="current-password">
+            </div>
+
+            <button class="login-btn" onclick="architectLogin()">Sign In →</button>
+
+            <div class="error-msg" id="arch-error">❌ Invalid username or password. Please try again.</div>
+
+            <div class="back-link">
+                <a href="home.html">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p style="text-align:center;padding:20px;background:#222;color:white;">
+            © 2026 OBSTRECTED Architecture | All Rights Reserved
+        </p>
+    </footer>
+
+    <script>
+        async function architectLogin() {
+            const username = document.getElementById('arch-username').value.trim();
+            const password = document.getElementById('arch-password').value.trim();
+            const errorDiv = document.getElementById('arch-error');
+            const btn = document.querySelector('.login-btn');
+
+            btn.textContent = 'Signing in...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password, role: 'architect' })
+                });
+                
+                if (res.ok) {
+                    window.location.href = '/architect_dashboard.html';
+                } else {
+                    errorDiv.style.display = 'block';
+                    document.getElementById('arch-password').value = '';
+                }
+            } catch (e) {
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = '❌ Server error. Is the server running?';
+            }
+            
+            btn.textContent = 'Sign In →';
+            btn.disabled = false;
+        }
+
+        // Allow Enter key to submit
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') architectLogin();
+        });
+    </script>
+
+</body>
+</html>

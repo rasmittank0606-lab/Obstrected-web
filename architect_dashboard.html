@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architecture Dashboard | OBSTRECTED</title>
+    <link rel="stylesheet" href="style/style.css">
+    <script src="guard.js"></script>
+    <style>
+        body {
+            background: #f0f4f8;
+            padding-top: 90px;
+        }
+
+        /* dashboard spacing — no top bar */
+
+        /* ---- Dashboard Layout ---- */
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 30px 50px;
+        }
+
+        /* ---- Stat Cards ---- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 14px;
+            padding: 24px 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+            border-top: 4px solid #28a745;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:nth-child(2) { border-top-color: #007bff; }
+        .stat-card:nth-child(3) { border-top-color: #ffc107; }
+        .stat-card:nth-child(4) { border-top-color: #17a2b8; }
+
+        .stat-card:hover { transform: translateY(-4px); }
+
+        .stat-card .stat-icon { font-size: 32px; margin-bottom: 10px; }
+        .stat-card .stat-num {
+            font-size: 34px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 5px;
+        }
+        .stat-card .stat-label { font-size: 13px; color: #777; }
+
+        /* ---- Section Titles ---- */
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ---- Table ---- */
+        .table-card {
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .table-card table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-card thead {
+            background: linear-gradient(135deg, #1a1a2e, #0f3460);
+            color: white;
+        }
+
+        .table-card thead th {
+            padding: 14px 18px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .table-card tbody tr {
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.2s;
+        }
+
+        .table-card tbody tr:last-child { border-bottom: none; }
+        .table-card tbody tr:hover { background: #f8fff8; }
+
+        .table-card tbody td {
+            padding: 13px 18px;
+            font-size: 14px;
+            color: #444;
+        }
+
+        /* ---- Status Badges ---- */
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-confirmed { background: #d4edda; color: #155724; }
+        .status-pending   { background: #fff3cd; color: #856404; }
+        .status-completed { background: #cce5ff; color: #004085; }
+        .status-cancelled { background: #f8d7da; color: #721c24; }
+
+        /* ---- Projects Grid ---- */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .project-dash-card {
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+            padding: 20px;
+            transition: transform 0.3s;
+        }
+
+        .project-dash-card:hover { transform: translateY(-4px); }
+
+        .project-dash-card h4 {
+            font-size: 16px;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+        }
+
+        .project-dash-card .type-tag {
+            display: inline-block;
+            background: #e8f5e9;
+            color: #28a745;
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .project-dash-card .client-name {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        .progress-bar-wrap {
+            background: #eee;
+            border-radius: 10px;
+            height: 8px;
+            margin-top: 10px;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #28a745, #1e7e34);
+            height: 8px;
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+
+        .progress-label {
+            font-size: 12px;
+            color: #555;
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        /* ---- Profile Card ---- */
+        .profile-card {
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+            padding: 28px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #28a745, #0f3460);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            flex-shrink: 0;
+        }
+
+        .profile-info h3 { font-size: 22px; color: #1a1a2e; margin-bottom: 5px; }
+        .profile-info p  { font-size: 14px; color: #666; margin-bottom: 4px; }
+
+        /* ---- Layout Wrapper ---- */
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: 2fr 1.1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        /* ---- Detail Panel ---- */
+        .detail-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .calendar-panel, .day-details-panel {
+            background: white;
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+        }
+        .cal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        .cal-header h3 { font-size: 20px; color: #1a1a2e; }
+        .cal-header button {
+            background: #f0f4f8; border: none; border-radius: 8px;
+            width: 35px; height: 35px; cursor: pointer; color: #1a1a2e; font-size: 16px;
+        }
+        .cal-header button:hover { background: #e2e8f0; }
+        .cal-grid {
+            display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center;
+        }
+        .cal-day-header { font-size: 13px; font-weight: 700; color: #888; margin-bottom: 8px; }
+        .cal-cell {
+            padding: 12px 0; border-radius: 10px; cursor: pointer; transition: 0.2s; position: relative; background: #fff; border: 1px solid #f0f0f0; color: #1a1a2e; font-weight: 500; font-size: 15px;
+        }
+        .cal-cell.disabled { color: #ccc; cursor: default; background: #fafafa; }
+        .cal-cell:not(.disabled):hover { background: #f0f4f8; border-color: #007bff; }
+        .cal-cell.selected { background: #1a1a2e; color: white; border-color: #1a1a2e; }
+        .cal-cell.has-appt::after {
+            content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%);
+            width: 6px; height: 6px; background: #28a745; border-radius: 50%;
+        }
+        
+        /* Appt List & Profile Card */
+        .day-details-panel h3 { font-size: 18px; color: #1a1a2e; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 15px; }
+        .appt-item {
+            padding: 18px; border: 1px solid #eee; border-radius: 12px; margin-bottom: 15px; cursor: pointer; transition: 0.2s; background: #fafafa;
+        }
+        .appt-item:hover { border-color: #007bff; background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .appt-item strong { display: block; font-size: 16px; color: #1a1a2e; margin-bottom: 4px; }
+        .appt-item span { color: #666; font-size: 13px; }
+        
+        .customer-profile-card {
+            margin-top: 25px; padding: 25px; background: white; border-radius: 12px; border-left: 5px solid #007bff; box-shadow: 0 4px 15px rgba(0,0,0,0.08); display: none; border-top: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;
+        }
+        .customer-profile-card h4 { font-size: 18px; color: #1a1a2e; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .cp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+        .cp-item label { font-size: 11px; color: #888; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; display: block; margin-bottom: 3px; }
+        .cp-item p { font-size: 14px; color: #1a1a2e; font-weight: 500; }
+
+        /* ---- Responsive ---- */
+        @media(max-width: 1024px) {
+            .dashboard-layout { grid-template-columns: 1fr; }
+            .detail-panel { display: grid; grid-template-columns: 1fr 1fr; }
+        }
+        @media(max-width: 900px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .projects-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media(max-width: 600px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .projects-grid { grid-template-columns: 1fr; }
+            .detail-panel { display: flex; flex-direction: column; }
+            .dash-topbar { flex-direction: column; gap: 12px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <header>
+        <div class="logo">OBSTRECTED</div>
+        <nav>
+            <ul>
+                <li><a href="home.html">Home</a></li>
+                <li><a href="portfolio.html">Portfolios</a></li>
+                <li><a href="our_project.html">Projects</a></li>
+                <li><a href="architect_dashboard.html" style="color:#28a745;">Architecture Panel</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Welcome strip (lightweight, no big panel) -->
+    <div style="max-width:1200px;margin:18px auto 0;padding:0 30px;">
+        <h2 id="welcomeName" style="font-size:20px;color:#1a1a2e;font-weight:700;">Welcome 👋</h2>
+        <p id="welcomeRole" style="font-size:13px;color:#888;margin-top:3px;">Loading...</p>
+    </div>
+
+    <div class="dashboard-container">
+
+        <!-- Profile Card -->
+        <div class="profile-card" id="profileCard">
+            <div class="profile-avatar">🏛️</div>
+            <div class="profile-info">
+                <h3 id="profileName">—</h3>
+                <p id="profileSpeciality">—</p>
+                <p style="color:#28a745; font-weight:600;">✅ Active &nbsp;|&nbsp; OBSTRECTED Architecture</p>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📁</div>
+                <div class="stat-num" id="statProjects">—</div>
+                <div class="stat-label">Total Projects</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📅</div>
+                <div class="stat-num" id="statAppointments">—</div>
+                <div class="stat-label">Upcoming Appointments</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⭐</div>
+                <div class="stat-num">4.8</div>
+                <div class="stat-label">Client Rating</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-num" id="statCompleted">—</div>
+                <div class="stat-label">Completed Projects</div>
+            </div>
+        </div>
+
+        <div class="dashboard-layout">
+            
+            <div class="main-column">
+                <!-- Upcoming Appointments (To-Do List) -->
+                <div class="section-title">📅 Pending Requests (To-Do)</div>
+                <div class="table-card">
+                    <table>
+                        <!-- Appointment table header with Action column -->
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Client Name</th>
+                                <th>House Type</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="appointmentTable">
+                            <!-- Filled by JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Active Projects -->
+                <div class="section-title">🏗️ Active Projects</div>
+                <div class="projects-grid" id="projectsGrid">
+                    <!-- Filled by JS -->
+                </div>
+            </div>
+
+            <div class="sidebar-column">
+                <!-- Detail Panel (Customer Hub & Calendar) -->
+                <div class="section-title" id="detailSection">🔍 Detail (Customer Hub)</div>
+                <div class="detail-panel">
+            
+            <!-- Calendar Panel -->
+            <div class="calendar-panel">
+                <div class="cal-header">
+                    <button onclick="changeMonth(-1)">◀</button>
+                    <h3 id="calMonthYear">Month 2026</h3>
+                    <button onclick="changeMonth(1)">▶</button>
+                </div>
+                <div class="cal-grid">
+                    <div class="cal-day-header">Sun</div><div class="cal-day-header">Mon</div>
+                    <div class="cal-day-header">Tue</div><div class="cal-day-header">Wed</div>
+                    <div class="cal-day-header">Thu</div><div class="cal-day-header">Fri</div><div class="cal-day-header">Sat</div>
+                </div>
+                <div class="cal-grid" id="calGrid">
+                    <!-- Dates filled by JS -->
+                </div>
+            </div>
+
+            <!-- Day Details & Customer Profile -->
+            <div class="day-details-panel">
+                <h3 id="dayDetailsTitle">Select a date</h3>
+                <div id="dayApptList">
+                    <div style="color:#888;text-align:center;padding:20px;font-style:italic;">Choose a highlighted date on the calendar to view appointments.</div>
+                </div>
+
+                <div class="customer-profile-card" id="customerProfileCard">
+                    <h4>👤 Customer Details</h4>
+                    <div class="cp-grid" id="custProfileGrid">
+                        <!-- Filled dynamically -->
+                    </div>
+                </div>
+            </div> <!-- closes day-details-panel -->
+
+        </div> <!-- closes detail-panel -->
+
+        </div> <!-- closes sidebar-column -->
+    </div> <!-- closes dashboard-layout -->
+</div> <!-- closes dashboard-container -->
+
+    <footer>
+        <p style="text-align:center;padding:20px;background:#222;color:white;">
+            © 2026 OBSTRECTED Architecture | All Rights Reserved
+        </p>
+    </footer>
+
+    <script>
+        // Use the global user from guard.js
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Need to wait slightly for guard.js to establish identity, or just fetch directly
+            try {
+                const [dashRes, apptsRes, projsRes] = await Promise.all([
+                    fetch('/api/architect/dashboard').then(r => r.ok ? r.json() : null),
+                    fetch('/api/architect/appointments').then(r => r.ok ? r.json() : null),
+                    fetch('/api/architect/projects').then(r => r.ok ? r.json() : null)
+                ]);
+
+                if (!dashRes) {
+                    // If dashboard fetch fails, we're likely not logged in, guard.js will kick us out anyway
+                    return;
+                }
+
+                const user = dashRes.architect;
+                document.getElementById('welcomeName').textContent = 'Welcome, ' + user.name + ' 👋';
+                document.getElementById('welcomeRole').textContent = user.speciality;
+                document.getElementById('profileName').textContent = user.name;
+                document.getElementById('profileSpeciality').textContent = '🎯 ' + user.speciality;
+                document.getElementById('statProjects').textContent = user.projects;
+                document.getElementById('statAppointments').textContent = user.appointments;
+                document.getElementById('statCompleted').textContent = (user.projects - 3) > 0 ? (user.projects - 3) : 0;
+
+                // Appointments Table & Calendar Extraction
+                const myAppts = apptsRes ? apptsRes.appointments : [];
+                const apptTbody = document.getElementById('appointmentTable');
+                
+                if (myAppts.length > 0) {
+                    extractApptDates(myAppts); // Send all appts to calendar
+                }
+
+                const pendingAppts = myAppts.filter(a => a.status === 'pending');
+                
+                if (pendingAppts.length === 0) {
+                    apptTbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#888;padding:20px;">No pending requests. You are all caught up!</td></tr>';
+                } else {
+                    pendingAppts.forEach((a, i) => {
+                        const statusMap = {
+                            confirmed: 'status-confirmed',
+                            pending:   'status-pending',
+                            completed: 'status-completed',
+                            cancelled: 'status-cancelled',
+                            rejected:  'status-cancelled'
+                        };
+                        const rowId = 'appt-row-' + a.id;
+                        const actionBtns = `
+                            <button onclick="updateAppt(${a.id}, 'confirmed', '${rowId}', '${i}')" 
+                                style="background:#28a745;color:white;border:none;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:12px;margin-right:4px;font-family:'Poppins',sans-serif;">
+                                ✅ Approve
+                            </button>
+                            <button onclick="updateAppt(${a.id}, 'rejected', '${rowId}', '${i}')" 
+                                style="background:#dc3545;color:white;border:none;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:12px;font-family:'Poppins',sans-serif;">
+                                ❌ Reject
+                            </button>`;
+                        apptTbody.innerHTML += `<tr id="${rowId}">
+                            <td>${i+1}</td>
+                            <td><strong>${a.client}</strong></td>
+                            <td>${a.type}</td>
+                            <td>${a.date}</td>
+                            <td>${a.time}</td>
+                            <td><span class="status ${statusMap[a.status]}" id="status-${i}">${a.status.charAt(0).toUpperCase()+a.status.slice(1)}</span></td>
+                            <td>${actionBtns}</td>
+                        </tr>`;
+                    });
+                }
+
+                // Projects
+                const myProjects = projsRes ? projsRes.projects : [];
+                const projGrid = document.getElementById('projectsGrid');
+                if (myProjects.length === 0) {
+                    projGrid.innerHTML = '<p style="color:#888;">No active projects.</p>';
+                } else {
+                    projGrid.innerHTML = '';
+                    myProjects.forEach(p => {
+                        projGrid.innerHTML += `<div class="project-dash-card">
+                            <h4>${p.name}</h4>
+                            <span class="type-tag">${p.type}</span>
+                            <p class="client-name">👤 Client: ${p.client}</p>
+                            <div class="progress-bar-wrap">
+                                <div class="progress-bar" style="width:${p.progress}%"></div>
+                            </div>
+                            <p class="progress-label">${p.progress}% Complete</p>
+                        </div>`;
+                    });
+                }
+
+
+            } catch (err) {
+                console.error("Failed to load dashboard data", err);
+            }
+        });
+
+        async function updateAppt(id, status, rowId, idx) {
+            const btnRow = document.getElementById(rowId);
+            if (btnRow) btnRow.querySelectorAll('button').forEach(b => { 
+                b.disabled = true; b.style.opacity = '0.5'; b.style.cursor = 'default'; 
+            });
+
+            try {
+                const res = await fetch('/api/architect/appointments/' + id, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status })
+                });
+
+                if (res.ok) {
+                    if (btnRow) {
+                        btnRow.style.transition = 'opacity 0.3s, transform 0.3s';
+                        btnRow.style.opacity = '0';
+                        btnRow.style.transform = 'scale(0.95)';
+                        setTimeout(() => btnRow.remove(), 300);
+                    }
+                    if (status === 'confirmed') window.globalApptDates.add(window.lastSelectedDate || '');
+                    renderCalendar(currentMonth, currentYear);
+                    if (window.lastSelectedDate) loadAppointmentsForDate(window.lastSelectedDate);
+                } else {
+                    alert('Error updating appointment status');
+                    if (btnRow) btnRow.querySelectorAll('button').forEach(b => { 
+                        b.disabled = false; b.style.opacity = '1'; b.style.cursor = 'pointer'; 
+                    });
+                }
+            } catch (e) {
+                alert('Server connection failed');
+                if (btnRow) btnRow.querySelectorAll('button').forEach(b => { 
+                    b.disabled = false; b.style.opacity = '1'; b.style.cursor = 'pointer'; 
+                });
+            }
+        }
+
+        // --- CALENDAR LOGIC --- //
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+        window.globalApptDates = new Set(); // YYYY-MM-DD that have active appointments
+        window.lastSelectedDate = null; // Store last selected string
+
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+        // Extract dates that have appointments
+        function extractApptDates(appointments) {
+            window.globalApptDates.clear();
+            appointments.forEach(a => {
+                if (a.status !== 'cancelled' && a.status !== 'rejected') {
+                    window.globalApptDates.add(a.date);
+                }
+            });
+            renderCalendar(currentMonth, currentYear);
+        }
+
+        function changeMonth(dir) {
+            currentMonth += dir;
+            if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+            if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+            renderCalendar(currentMonth, currentYear);
+        }
+
+        function renderCalendar(month, year) {
+            document.getElementById('calMonthYear').textContent = `${monthNames[month]} ${year}`;
+            const grid = document.getElementById('calGrid');
+            grid.innerHTML = '';
+            
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            // Padding cells
+            for (let i = 0; i < firstDay; i++) {
+                grid.innerHTML += `<div class="cal-cell disabled"></div>`;
+            }
+            
+            // Day cells
+            for (let d = 1; d <= daysInMonth; d++) {
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                
+                let classes = 'cal-cell';
+                if (window.globalApptDates.has(dateStr)) classes += ' has-appt';
+                if (window.lastSelectedDate === dateStr) classes += ' selected';
+                
+                if (window.globalApptDates.has(dateStr) || window.lastSelectedDate === dateStr) {
+                    grid.innerHTML += `<div class="${classes}" onclick="loadAppointmentsForDate('${dateStr}')">${d}</div>`;
+                } else {
+                    // Non-appointment cells are still clickable to clear panel
+                    grid.innerHTML += `<div class="${classes}" onclick="loadAppointmentsForDate('${dateStr}')">${d}</div>`;
+                }
+            }
+        }
+
+        async function loadAppointmentsForDate(dateStr) {
+            window.lastSelectedDate = dateStr;
+            renderCalendar(currentMonth, currentYear); // Re-render to highlight selected
+            document.getElementById('customerProfileCard').style.display = 'none';
+
+            const opts = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('dayDetailsTitle').textContent = `📅 Appointments for ${new Date(dateStr).toLocaleDateString(undefined, opts)}`;
+            
+            const listEl = document.getElementById('dayApptList');
+            listEl.innerHTML = '<div style="color:#888;text-align:center;padding:20px;">Fetching...</div>';
+
+            try {
+                const res = await fetch('/api/architect/appointments/by-date/' + dateStr);
+                const data = await res.json();
+
+                if (!res.ok || !data.appointments || data.appointments.length === 0) {
+                    listEl.innerHTML = '<div style="color:#888;text-align:center;padding:20px;font-style:italic;">No registered appointments on this date.</div>';
+                    return;
+                }
+
+                listEl.innerHTML = '';
+                data.appointments.forEach(a => {
+                    // Store appointment object as JSON in a data attribute
+                    const safeA = JSON.stringify(a).replace(/"/g, '&quot;');
+                    const statusColor = a.status === 'confirmed' ? '#28a745' : (a.status === 'pending' ? '#ffc107' : '#dc3545');
+                    
+                    listEl.innerHTML += `
+                        <div class="appt-item" onclick="showCustomerProfile(this)" data-appt="${safeA}">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <strong>${a.time} — ${a.client}</strong>
+                                <span style="background:${statusColor}; color:white; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:bold; text-transform:uppercase;">${a.status}</span>
+                            </div>
+                            <span style="display:block; margin-top:5px;">🏠 ${a.type}</span>
+                        </div>
+                    `;
+                });
+            } catch (e) {
+                listEl.innerHTML = '<div style="color:#dc3545;text-align:center;padding:20px;">Failed to fetch appointments.</div>';
+            }
+        }
+
+        function showCustomerProfile(element) {
+            // Remove highlight from previous item
+            document.querySelectorAll('.appt-item').forEach(el => {
+                el.style.borderColor = '#eee'; el.style.background = '#fafafa';
+            });
+            // Add highlight to this item
+            element.style.borderColor = '#007bff';
+            element.style.background = 'white';
+
+            const appt = JSON.parse(element.getAttribute('data-appt'));
+            const card = document.getElementById('customerProfileCard');
+            const grid = document.getElementById('custProfileGrid');
+
+            grid.innerHTML = `
+                <div class="cp-item"><label>Client Name</label><p>${appt.client}</p></div>
+                <div class="cp-item"><label>Project Type</label><p>${appt.type}</p></div>
+                <div class="cp-item"><label>Email</label><p>${appt.email || 'N/A'}</p></div>
+                <div class="cp-item"><label>Phone</label><p>${appt.phone || 'N/A'}</p></div>
+                <div class="cp-item"><label>Planning Prepared</label><p>${appt.planning || 'Unknown'}</p></div>
+                <div class="cp-item"><label>History Status</label><p>${appt.status}</p></div>
+            `;
+            card.style.display = 'block';
+        }
+
+    </script>
+</body>
+</html>

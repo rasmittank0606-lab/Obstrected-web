@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | OBSTRECTED Architecture</title>
+
+    <link rel="stylesheet" href="style/style.css">
+
+    <style>
+        /* About Section */
+        .about-page {
+            max-width: 1100px;
+            margin: 120px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Intro */
+        .about-intro {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .about-intro h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .about-intro p {
+            font-size: 18px;
+            color: #555;
+        }
+
+        /* Grid Layout */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        /* Image */
+        .about-image img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Content */
+        .about-content h2 {
+            margin-bottom: 15px;
+        }
+
+        .about-content p {
+            margin-bottom: 15px;
+            color: #555;
+            line-height: 1.7;
+        }
+
+        /* Services */
+        .services {
+            margin-top: 50px;
+        }
+
+        .services h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .service-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .service-card {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .service-card h3 {
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .service-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+<script src="guard.js"></script>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">OBSTRECTED</div>
+
+        <nav>
+            <ul>
+                <li><a href="home.html">Home</a></li>
+                <li><a href="portfolio.html">portfolios</a></li>
+                <li><a href="our_project.html">Projects</a></li>
+                <li><a href="book_appointment.html">Book Appointment</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="architect_login.html">Architect Panel</a></li>
+                <li><a href="customer_login.html">Customer Panel</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="about-page">
+
+        <div class="about-intro">
+            <h1>About OBSTRECTED Architecture</h1>
+            <p>Designing modern homes with creativity, innovation, and architectural excellence.</p>
+        </div>
+
+        <div class="about-grid">
+
+            <div class="about-image">
+                <img src="style/image/about.jpg" alt="Architecture Design">
+            </div>
+
+            <div class="about-content">
+                <h2>Who We Are</h2>
+
+                <p>
+                    OBSTRECTED Architecture is a modern design studio focused on creating
+                    beautiful, functional, and sustainable house designs.
+                </p>
+
+                <p>
+                    Our architects combine creativity with technical expertise to deliver
+                    innovative residential and commercial architectural solutions.
+                </p>
+
+                <p>
+                    From concept planning to final design, we help clients transform their
+                    dream homes into reality.
+                </p>
+            </div>
+
+        </div>
+
+        <div class="services">
+
+            <h2>Our Services</h2>
+
+            <div class="service-cards">
+
+                <div class="service-card">
+                    <h3>House Planning</h3>
+                    <p>Modern and functional house plans optimized for space, light, and comfort.</p>
+                </div>
+
+                <div class="service-card">
+                    <h3>3D Elevation Design</h3>
+                    <p>Realistic 3D elevation designs to visualize your future home.</p>
+                </div>
+
+                <div class="service-card">
+                    <h3>Interior Layout</h3>
+                    <p>Creative interior layouts designed for beauty and functionality.</p>
+                </div>
+
+                <div class="service-card">
+                    <h3>Villa Design</h3>
+                    <p>Luxury villa architecture with modern and elegant design concepts.</p>
+                </div>
+
+                <div class="service-card">
+                    <h3>Duplex Planning</h3>
+                    <p>Efficient two-floor duplex house planning with smart layouts.</p>
+                </div>
+
+                <div class="service-card">
+                    <h3>Architect Consultation</h3>
+                    <p>Professional consultation for house design and construction planning.</p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <footer>
+        <p style="text-align:center; padding:20px; background:#222; color:white;">
+            © 2026 OBSTRECTED Architecture | All Rights Reserved
+        </p>
+    </footer>
+
+</body>
+</html>
