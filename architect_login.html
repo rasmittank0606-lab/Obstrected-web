@@ -186,6 +186,17 @@
                 <input type="password" id="arch-password" placeholder="Enter your password" autocomplete="current-password">
             </div>
 
+            <!-- Quick Login for Presentation -->
+            <div style="background: rgba(40,167,69,0.1); padding: 10px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
+                <p style="font-size: 12px; color: #28a745; margin-bottom: 8px; font-weight: bold;">Quick Login (Demo)</p>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
+                    <span style="font-size: 11px; padding: 4px 8px; background: white; border: 1px solid #28a745; border-radius: 12px; cursor: pointer; color: #28a745; transition: all 0.2s;" onmouseover="this.style.background='#28a745'; this.style.color='white';" onmouseout="this.style.background='white'; this.style.color='#28a745';" onclick="fillCreds('beloo.gajjar', 'Arch@BeG2024')">Ar. Beloo</span>
+                    <span style="font-size: 11px; padding: 4px 8px; background: white; border: 1px solid #28a745; border-radius: 12px; cursor: pointer; color: #28a745; transition: all 0.2s;" onmouseover="this.style.background='#28a745'; this.style.color='white';" onmouseout="this.style.background='white'; this.style.color='#28a745';" onclick="fillCreds('riya.kavathiya', 'Arch@RiK2024')">Ar. Riya</span>
+                    <span style="font-size: 11px; padding: 4px 8px; background: white; border: 1px solid #28a745; border-radius: 12px; cursor: pointer; color: #28a745; transition: all 0.2s;" onmouseover="this.style.background='#28a745'; this.style.color='white';" onmouseout="this.style.background='white'; this.style.color='#28a745';" onclick="fillCreds('rajveer.vaghela', 'Arch@RaV2024')">Ar. Rajveer</span>
+                    <span style="font-size: 11px; padding: 4px 8px; background: white; border: 1px solid #28a745; border-radius: 12px; cursor: pointer; color: #28a745; transition: all 0.2s;" onmouseover="this.style.background='#28a745'; this.style.color='white';" onmouseout="this.style.background='white'; this.style.color='#28a745';" onclick="fillCreds('kushal.shah', 'Arch@KuS2024')">Ar. Kushal</span>
+                </div>
+            </div>
+
             <button class="login-btn" onclick="architectLogin()">Sign In →</button>
 
             <div class="error-msg" id="arch-error">❌ Invalid username or password. Please try again.</div>
@@ -203,6 +214,11 @@
     </footer>
 
     <script>
+        function fillCreds(u, p) {
+            document.getElementById('arch-username').value = u;
+            document.getElementById('arch-password').value = p;
+        }
+
         async function architectLogin() {
             const username = document.getElementById('arch-username').value.trim();
             const password = document.getElementById('arch-password').value.trim();
